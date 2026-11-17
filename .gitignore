@@ -1,0 +1,8 @@
+# Pasta local do Netlify (ligação com a conta e cache de build)
+.netlify/
+# Chaves e segredos nunca vão para o repositório
+.env
+.env.*
+node_modules/
+# Configuração local de ferramentas de desenvolvimento
+.claude/

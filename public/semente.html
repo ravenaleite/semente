@@ -1,0 +1,1768 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Educação financeira na prática: aprenda vendo o seu dinheiro crescer, com simulador de juros compostos, lições curtas, bolsa e notícias. Gratuito.">
+<link rel="canonical" href="https://semente-simulador.netlify.app/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Semente">
+<meta property="og:title" content="Semente: educação financeira na prática">
+<meta property="og:description" content="Educação financeira na prática: aprenda vendo o seu dinheiro crescer, com simulador de juros compostos, lições curtas, bolsa e notícias. Gratuito.">
+<meta property="og:url" content="https://semente-simulador.netlify.app/">
+<meta property="og:image" content="https://semente-simulador.netlify.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Semente: educação financeira na prática, com o simulador aberto no celular">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Semente: educação financeira na prática">
+<meta name="twitter:description" content="Educação financeira na prática: aprenda vendo o seu dinheiro crescer, com simulador de juros compostos, lições curtas, bolsa e notícias. Gratuito.">
+<meta name="twitter:image" content="https://semente-simulador.netlify.app/og-image.png">
+<meta name="theme-color" content="#f5f0e6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171512" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232f5d3a'/%3E%3Cpath d='M16 26V15M16 17c0-5-3-8-8-8 0 5 3 8 8 8zM16 14c0-4 3-7 8-7 0 4-3 7-8 7z' fill='%23bfe3a8' stroke='%23bfe3a8' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Semente">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Semente</title>
+<style>
+  :root {
+    --bg: #f5f0e6; --card: #fffdf8; --text: #2a2520; --muted: #6d6359; --line: #e6dfd0;
+    --leaf: #2f7a3e; --soil: #a9825a; --sun: #a87208; --late: #a8432f; /* tons do tema claro escurecidos para passar em 4,5:1 */
+    --hero: #2f5d3a; --hero-text: #f7f3e8; --hero-muted: #c5d8c0; --hero-line: rgba(255,255,255,.16);
+    --track: #e3dbc9;
+    --split-plantou: #d9b88f; --split-juros: #a5dc98; /* barra e bolinhas do cartão verde, iguais nos dois temas */
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #171512; --card: #211e1a; --text: #f1ebe0; --muted: #a39a8c; --line: #332e27;
+      --leaf: #6cc07a; --soil: #c49a6c; --sun: #eab54a; --late: #e37a62;
+      --hero: #24452c; --hero-text: #f4f0e4; --hero-muted: #b3c9ae; --hero-line: rgba(255,255,255,.12);
+      --track: #3a342c;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.5 var(--sans); -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* Barra superior */
+  .top {
+    position: sticky; top: 0; z-index: 5; background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    padding: calc(10px + env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left));
+  }
+  .top-in { max-width: 1120px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .brand { display: flex; align-items: center; gap: 10px; font: 600 1.35rem/1 var(--serif); letter-spacing: -0.01em; }
+  .brand svg { width: 30px; height: 30px; flex: none; }
+  .top-val { text-align: right; line-height: 1.15; }
+  .top-val small { display: block; font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .top-val b { font-size: 1.05rem; color: var(--leaf); }
+  .top-r { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  /* Celulares bem estreitos (320 px): o cabeçalho encolhe um pouco para caber tudo. */
+  @media (max-width: 350px) {
+    .brand { font-size: 1.15rem; gap: 7px; }
+    .brand svg { width: 26px; height: 26px; }
+    .top-r { gap: 8px; }
+    .top-val b { font-size: 0.95rem; }
+    .top-val small { font-size: 0.62rem; }
+  }
+
+  /* Conta */
+  .acct {
+    display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 12px; cursor: pointer;
+    font: inherit; font-size: 0.85rem; font-weight: 650; color: var(--text);
+    background: var(--card); border: 1px solid var(--line); border-radius: 99px;
+  }
+  .acct[hidden] { display: none; }
+  .acct svg { width: 18px; height: 18px; flex: none; }
+  .acct.on { color: var(--hero-text); background: var(--hero); border-color: var(--hero); }
+  .acct:focus-visible { outline: 2px solid var(--leaf); outline-offset: 2px; }
+  @media (max-width: 460px) { .acct { width: 40px; padding: 0; justify-content: center; } .acct span { display: none; } }
+  .dlg {
+    width: min(440px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 22px 20px; overflow-y: auto;
+    color: var(--text); background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+  }
+  .dlg::backdrop { background: rgba(0, 0, 0, .55); }
+  .dlg h2 { font: 600 1.25rem/1.2 var(--serif); margin: 0 36px 10px 0; }
+  .dlg p { margin: 0 0 12px; }
+  .dlg-x { position: absolute; top: 12px; right: 12px; margin: 0; }
+  .dlg-x button { width: 36px; height: 36px; border: 0; border-radius: 50%; background: var(--bg); color: var(--muted); font-size: 1.3rem; line-height: 1; cursor: pointer; }
+  .dlg .search { max-width: none; margin-bottom: 10px; }
+  .dlg-msg { font-size: 0.88rem; color: var(--leaf); min-height: 1.3em; }
+  .dlg-msg.err { color: var(--late); }
+  .dlg .hint { margin-top: 4px; }
+  .saved { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 8px; }
+  .saved li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; padding: 10px 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 12px; }
+  .saved b { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .saved small { display: block; color: var(--muted); font-size: 0.76rem; }
+  .saved .acts { display: flex; gap: 6px; }
+  .saved button, .link { font: inherit; font-size: 0.82rem; font-weight: 650; min-height: 36px; padding: 0 12px; border-radius: 99px; cursor: pointer; background: transparent; color: var(--text); border: 1px solid var(--line); }
+  .saved button.del { color: var(--late); }
+  .saved .empty { display: block; color: var(--muted); font-size: 0.88rem; }
+  .dlg code { font-size: 0.85em; background: var(--bg); padding: 1px 5px; border-radius: 5px; }
+
+  main {
+    max-width: 1120px; margin: 0 auto;
+    padding: 20px max(16px, env(safe-area-inset-right)) calc(40px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  }
+  .intro { margin: 0 0 18px; }
+  .intro h1 { font: 600 clamp(1.6rem, 5vw, 2.3rem)/1.15 var(--serif); margin: 0 0 6px; letter-spacing: -0.02em; text-wrap: balance; }
+  .intro p { margin: 0; color: var(--muted); max-width: 56ch; }
+
+  .layout { display: grid; gap: 16px; }
+  .results { display: grid; gap: 16px; min-width: 0; }
+  @media (max-width: 899px) {
+    /* No celular os controles ficam logo abaixo do resultado */
+    .results { display: contents; }
+    .hero { order: 1; } .controls { order: 2; } .chart-card { order: 3; } .insights-sec { order: 4; }
+  }
+  @media (min-width: 900px) {
+    .layout { grid-template-columns: 340px minmax(0, 1fr); gap: 24px; align-items: start; }
+    .controls { position: sticky; top: 76px; order: -1; }
+  }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+
+  /* Destaque do resultado */
+  .hero { background: var(--hero); color: var(--hero-text); border-radius: 22px; padding: 22px 20px 18px; }
+  .hero .lbl { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--hero-muted); }
+  .hero .big { font: 600 clamp(2.1rem, 9vw, 3.4rem)/1.1 var(--serif); letter-spacing: -0.02em; margin: 2px 0 14px; overflow-wrap: anywhere; }
+  .split { display: flex; height: 10px; border-radius: 99px; overflow: hidden; background: var(--hero-line); }
+  .split i { display: block; height: 100%; }
+  .split .a { background: var(--split-plantou); }
+  .split .b { background: var(--split-juros); }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
+  .stats div { min-width: 0; }
+  .hero .stats small { display: flex; align-items: center; gap: 6px; font-size: 0.74rem; color: var(--hero-muted); }
+  .stats b { display: block; font-size: 1rem; font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  @media (max-width: 420px) {
+    .stats { grid-template-columns: 1fr 1fr; }
+    .stats div:last-child { grid-column: 1 / -1; padding-top: 10px; border-top: 1px solid var(--hero-line); }
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex: none; }
+  .d-plantou { background: var(--split-plantou); } .d-juros { background: var(--split-juros); }
+  .d-soil { background: var(--soil); } .d-leaf { background: var(--leaf); } .d-sun { background: var(--sun); } .d-late { background: var(--late); }
+
+  /* Gráfico */
+  .chartwrap { position: relative; height: clamp(240px, 46vw, 380px); }
+  canvas { width: 100%; height: 100%; display: block; touch-action: pan-y; }
+  .tip {
+    position: absolute; top: 8px; pointer-events: none; display: none; min-width: 180px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 9px 11px; font-size: 0.8rem; box-shadow: 0 4px 14px rgba(0,0,0,.14);
+  }
+  .tip b { display: block; margin-bottom: 4px; }
+  .tip div { display: flex; justify-content: space-between; gap: 14px; font-variant-numeric: tabular-nums; }
+  .tip span { color: var(--muted); display: flex; align-items: center; gap: 6px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.8rem; color: var(--muted); margin-top: 12px; }
+  .legend span { display: flex; align-items: center; gap: 6px; }
+
+  /* Controles */
+  .controls h2, .insights-h { font: 600 1.1rem/1.2 var(--serif); margin: 0 0 14px; }
+  .field { margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 0.9rem; color: var(--muted); }
+  .field output { color: var(--text); font-weight: 650; font-size: 1rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .sep { border: 0; border-top: 1px dashed var(--line); margin: 18px 0; }
+  .frow { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .inp {
+    display: inline-flex; align-items: center; gap: 4px; height: 40px; padding: 0 10px; flex: none;
+    background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
+  }
+  .inp:focus-within { border-color: var(--leaf); box-shadow: 0 0 0 2px color-mix(in srgb, var(--leaf) 30%, transparent); }
+  .inp i { font-style: normal; color: var(--muted); font-size: 0.9rem; }
+  .inp input {
+    border: 0; outline: 0; padding: 0; min-width: 0; background: transparent; color: var(--text);
+    font: inherit; font-size: 16px; font-weight: 650; text-align: right; font-variant-numeric: tabular-nums;
+  }
+  .inp .w-money { width: 10ch; } .inp .w-pct { width: 6ch; }
+  .seg.mini { margin: 8px 0 0; }
+  .seg.mini button { min-height: 32px; padding: 4px 12px; font-size: 0.8rem; }
+  .seg button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .hint { margin: 0; font-size: 0.78rem; color: var(--muted); }
+  .check { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; font-size: 0.92rem; line-height: 1.35; }
+  .check input { width: 20px; height: 20px; margin: 1px 0 0; flex: none; accent-color: var(--leaf); }
+  .check small { display: block; color: var(--muted); font-size: 0.76rem; margin-top: 2px; }
+  .net { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--hero-line); }
+  .net[hidden] { display: none; }
+  .hero .net small { display: block; font-size: 0.74rem; color: var(--hero-muted); }
+  .net b { display: block; font-size: 1rem; font-weight: 650; }
+
+  input[type=range] {
+    -webkit-appearance: none; appearance: none; width: 100%; height: 36px; margin: 0;
+    background: transparent; cursor: pointer; --fill: 50%; --c: var(--leaf);
+  }
+  input[type=range].alt { --c: var(--sun); }
+  input[type=range].warn { --c: var(--late); }
+  input[type=range]::-webkit-slider-runnable-track {
+    height: 6px; border-radius: 99px;
+    background: linear-gradient(to right, var(--c) var(--fill), var(--track) var(--fill));
+  }
+  input[type=range]::-moz-range-track { height: 6px; border-radius: 99px; background: var(--track); }
+  input[type=range]::-moz-range-progress { height: 6px; border-radius: 99px; background: var(--c); }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none; width: 26px; height: 26px; margin-top: -10px;
+    border-radius: 50%; background: var(--card); border: 3px solid var(--c);
+    box-shadow: 0 1px 3px rgba(0,0,0,.25);
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 20px; height: 20px; border-radius: 50%; background: var(--card); border: 3px solid var(--c);
+    box-shadow: 0 1px 3px rgba(0,0,0,.25);
+  }
+  input[type=range]:focus-visible { outline: 2px solid var(--c); outline-offset: 2px; border-radius: 8px; }
+
+  /* Destaques */
+  .insights { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+  .insights li {
+    display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: start;
+    background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px;
+  }
+  .insights .ic { --contraste: grafico; /* círculo só com ícone */
+    width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+    color: var(--leaf); background: color-mix(in srgb, currentColor 14%, transparent);
+  }
+  .insights li.warn .ic { color: var(--late); --contraste: grafico; }
+  .insights li.real .ic { color: var(--sun); --contraste: grafico; }
+  .insights svg { width: 18px; height: 18px; }
+  .insights b { font-variant-numeric: tabular-nums; }
+
+  /* Faixa de mercado */
+  .market { display: flex; gap: 10px; overflow-x: auto; margin: 0 0 18px; padding-bottom: 2px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .market::-webkit-scrollbar { display: none; }
+  .market:empty { display: none; }
+  .chip { flex: none; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 9px 14px; line-height: 1.3; }
+  .chip small { display: block; font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .chip b { font-size: 1rem; font-variant-numeric: tabular-nums; }
+  .chip em { font-style: normal; font-size: 0.8rem; font-weight: 650; margin-left: 6px; font-variant-numeric: tabular-nums; }
+  .up { color: var(--leaf); } .down { color: var(--late); }
+
+  /* Bolsa de valores */
+  .stock { margin-top: 16px; }
+  @media (min-width: 900px) { .stock { margin-top: 24px; } }
+  .stock-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+  .stock-head h2 { font: 600 1.1rem/1.2 var(--serif); margin: 0; }
+  .search { display: flex; gap: 8px; flex: 1 1 260px; max-width: 420px; }
+  .search input {
+    flex: 1; min-width: 0; height: 44px; padding: 0 14px; font: inherit; font-size: 16px;
+    color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 12px;
+  }
+  /* min-width: 0 deixa o formulário encolher em telas estreitas; sem isso o campo impõe a largura dele e o botão sai do cartão. */
+  .search { position: relative; min-width: 0; }
+  .search input { width: 0; }
+  .search .btn { flex: none; }
+  .search input::placeholder { color: var(--muted); }
+  .sug {
+    position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 4; margin: 0; padding: 6px; list-style: none;
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.25); max-height: 330px; overflow-y: auto; overscroll-behavior: contain;
+  }
+  .sug[hidden] { display: none; }
+  .sug li { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px; border-radius: 10px; cursor: pointer; min-height: 48px; }
+  .sug li.act, .sug li:hover { background: var(--bg); }
+  .sug li.empty { display: block; min-height: 0; color: var(--muted); font-size: 0.86rem; cursor: default; background: none; }
+  .sug img { width: 30px; height: 30px; border-radius: 8px; background: var(--bg); }
+  .sug .n b { display: block; font-size: 0.92rem; }
+  .sug .n > span { display: block; font-size: 0.76rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sug .p { text-align: right; font-size: 0.82rem; font-variant-numeric: tabular-nums; }
+  .sug .p em { display: block; font-style: normal; font-weight: 650; font-size: 0.76rem; }
+  .tag { font-size: 0.66rem; font-weight: 650; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 0 5px; margin-left: 6px; vertical-align: 1px; }
+  .search input:focus-visible { outline: 2px solid var(--leaf); outline-offset: 1px; }
+  .btn { height: 44px; padding: 0 18px; font: inherit; font-weight: 650; color: var(--hero-text); background: var(--hero); border: 0; border-radius: 12px; cursor: pointer; }
+  .quick, .seg { display: flex; flex-wrap: wrap; gap: 8px; }
+  .quick { margin-bottom: 14px; }
+  .seg { margin-bottom: 8px; }
+  .quick button, .seg button {
+    font: inherit; font-size: 0.85rem; font-weight: 600; color: var(--muted); background: transparent;
+    border: 1px solid var(--line); border-radius: 99px; padding: 6px 14px; min-height: 36px; cursor: pointer;
+  }
+  .quick button.on, .seg button.on { color: var(--hero-text); background: var(--hero); border-color: var(--hero); }
+  .btn:focus-visible, .quick button:focus-visible, .seg button:focus-visible { outline: 2px solid var(--leaf); outline-offset: 2px; }
+  .s-msg { color: var(--muted); font-size: 0.9rem; margin-bottom: 10px; }
+  .s-msg:empty { display: none; }
+  .s-msg.err { color: var(--late); }
+  .q-top { display: flex; align-items: center; gap: 12px; margin: 4px 0 14px; }
+  .q-top img { width: 44px; height: 44px; border-radius: 12px; flex: none; background: var(--bg); }
+  .q-id { min-width: 0; flex: 1; line-height: 1.25; }
+  .q-id b { display: block; font-size: 1.05rem; }
+  .q-id span { display: block; color: var(--muted); font-size: 0.82rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .q-price { text-align: right; flex: none; }
+  .q-price .big { font: 600 clamp(1.5rem, 6vw, 2rem)/1.1 var(--serif); }
+  .pill { display: inline-block; margin-top: 4px; font-size: 0.82rem; font-weight: 650; padding: 2px 10px; border-radius: 99px; background: color-mix(in srgb, currentColor 14%, transparent); font-variant-numeric: tabular-nums; }
+  .s-chart { position: relative; height: clamp(220px, 42vw, 340px); }
+  .q-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--line); }
+  @media (max-width: 520px) { .q-stats { grid-template-columns: 1fr 1fr; } }
+  .q-stats small { display: block; font-size: 0.74rem; color: var(--muted); }
+  .q-stats b { font-size: 0.98rem; font-variant-numeric: tabular-nums; }
+  .q-foot { margin: 14px 0 0; font-size: 0.76rem; color: var(--muted); }
+
+  /* Exemplos prontos e seção Aprender */
+  .starters { margin: 0 0 16px; }
+  .starters > span { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; }
+  .starters .quick { margin: 0; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .starters .quick::-webkit-scrollbar { display: none; }
+  .starters .quick button { flex: none; background: var(--card); color: var(--text); white-space: nowrap; }
+  .starters .quick button.on { background: var(--hero); color: var(--hero-text); border-color: var(--hero); }
+  @media (min-width: 900px) { .starters .quick { flex-wrap: wrap; } }
+  .learn { margin-top: 16px; }
+  @media (min-width: 900px) { .learn { margin-top: 24px; } }
+  .learn h2 { font: 600 1.1rem/1.2 var(--serif); margin: 0 0 4px; }
+  .learn-sub { margin: 0 0 12px; color: var(--muted); font-size: 0.9rem; }
+  .learn details { border: 1px solid var(--line); border-radius: 14px; background: var(--bg); margin-bottom: 8px; }
+  .learn summary {
+    display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 8px 40px 8px 12px; position: relative;
+    font: 600 1rem/1.3 var(--serif); cursor: pointer; list-style: none; border-radius: 14px;
+  }
+  .learn summary::-webkit-details-marker { display: none; }
+  .learn summary::after { content: '+'; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font: 400 1.4rem/1 var(--sans); color: var(--leaf); --contraste: grafico; /* sinal decorativo de abrir/fechar: vale o 3:1 de elemento gráfico */ }
+  .learn details[open] summary::after { content: '–'; }
+  .learn summary:focus-visible { outline: 2px solid var(--leaf); outline-offset: 2px; }
+  .learn summary i { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 650 0.85rem/1 var(--sans); font-style: normal; color: var(--hero-text); background: var(--hero); }
+  .lesson { padding: 2px 14px 16px 54px; max-width: 68ch; }
+  @media (max-width: 520px) { .lesson { padding-left: 14px; } }
+  .lesson p { margin: 0 0 10px; font-size: 0.95rem; }
+  .lesson .take { padding: 10px 12px; border-left: 4px solid var(--leaf); background: var(--card); border-radius: 0 10px 10px 0; font-weight: 600; }
+  .lesson .btn { display: inline-flex; align-items: center; text-decoration: none; margin-top: 4px; }
+  .learn-note { margin-top: 12px; }
+
+  /* Notícias */
+  .news { margin-top: 16px; }
+  @media (min-width: 900px) { .news { margin-top: 24px; } }
+  .news h2 { font: 600 1.1rem/1.2 var(--serif); margin: 0 0 12px; }
+  .news-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  @media (min-width: 700px) { .news-list { grid-template-columns: 1fr 1fr; } }
+  .news-list a {
+    display: block; height: 100%; padding: 14px 40px 14px 14px; position: relative; color: inherit; text-decoration: none;
+    background: var(--bg); border: 1px solid var(--line); border-radius: 14px;
+  }
+  .news-list a::after { content: '↗'; position: absolute; top: 12px; right: 14px; color: var(--leaf); font-weight: 700; --contraste: grafico; /* seta decorativa de link externo */ }
+  .news-list a:hover { border-color: var(--leaf); }
+  .news-list a:focus-visible { outline: 2px solid var(--leaf); outline-offset: 2px; }
+  .news-list small { display: block; font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .news-list b { display: block; font: 600 1rem/1.3 var(--serif); }
+  .news-list span { display: block; font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
+  .news-foot { margin: 12px 0 0; font-size: 0.76rem; color: var(--muted); }
+  .news-foot a { color: inherit; }
+
+  /* Barra de navegação de aplicativo (só em telas de celular e tablet) */
+  .note a { color: inherit; }
+  #topo, #learn, #stock, #news { scroll-margin-top: 76px; }
+  .tabs { display: none; }
+  @media (max-width: 899px) {
+    .tabs {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; display: flex; gap: 4px;
+      background: var(--card); border-top: 1px solid var(--line);
+      padding: 6px max(8px, env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+    }
+    .tabs a, .tabs button {
+      flex: 1; min-width: 0; min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+      font: inherit; font-size: 0.7rem; font-weight: 650; color: var(--muted); text-decoration: none;
+      background: none; border: 0; border-radius: 12px; cursor: pointer;
+    }
+    .tabs button[hidden] { display: none; }
+    .tabs svg { width: 22px; height: 22px; }
+    .tabs .on { color: var(--leaf); }
+    .tabs a:focus-visible, .tabs button:focus-visible { outline: 2px solid var(--leaf); outline-offset: -2px; }
+    main { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+  }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+
+  /* Efeitos: todos leves (só opacidade e transform) e desligados para quem pede menos movimento */
+  .pulse { position: absolute; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; pointer-events: none; display: none; }
+  .pulse::before, .pulse::after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: currentColor; opacity: 0; }
+  .brand { cursor: pointer; }
+  @media (prefers-reduced-motion: no-preference) {
+    /* O conteúdo nunca fica escondido à espera da animação: quem ainda não entrou na tela está visível,
+       e a entrada parte de meio transparente. Se o navegador engasgar, tudo continua legível. */
+    .fx .rv.in { animation: rise .7s cubic-bezier(.2, .7, .2, 1) both; }
+    .brand svg { animation: pop .6s cubic-bezier(.3, 1.6, .5, 1) both; }
+    .brand .stem { stroke-dasharray: 12; stroke-dashoffset: 12; animation: stem .6s ease-out .35s forwards; }
+    .brand .leaf { transform: scale(.35); transform-box: view-box; animation: leaf .7s cubic-bezier(.3, 1.9, .5, 1) forwards; }
+    .brand .l1 { transform-origin: 16px 17px; animation-delay: .85s; }
+    .brand .l2 { transform-origin: 16px 14px; animation-delay: 1.1s; }
+    .brand.again svg, .brand.again .stem, .brand.again .leaf { animation-name: none; }
+    .pulse::before, .pulse::after { animation: pulse 1.6s ease-out infinite; }
+    .pulse::after { animation-delay: .8s; }
+    .flash { animation: flash 1.8s ease-out; }
+    .bump { animation: bump .5s ease-out; }
+    .split i { transition: width .6s cubic-bezier(.2, .7, .2, 1); }
+  }
+  @keyframes rise { from { opacity: .35; transform: translateY(44px) scale(.96); } }
+  @keyframes pop { from { transform: scale(.5) rotate(-25deg); } }
+  @keyframes stem { to { stroke-dashoffset: 0; } }
+  @keyframes leaf { to { transform: scale(1); } }
+  @keyframes pulse { from { opacity: .75; transform: scale(1); } to { opacity: 0; transform: scale(5); } }
+  @keyframes flash { 0%, 45% { color: var(--fc); transform: scale(1.08); } }
+  @keyframes bump { 40% { transform: scale(1.045); } }
+
+  .note { color: var(--muted); font-size: 0.8rem; margin: 24px 0 0; text-align: center; }
+  .hero .big, .q-price .big { transform-origin: left center; }
+  .q-price .big { transform-origin: right center; }
+</style>
+<script>
+  // Liga os efeitos de entrada só quando a pessoa não pediu menos movimento.
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('fx');
+</script>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <rect width="32" height="32" rx="9" fill="var(--hero)"/>
+        <g fill="#bfe3a8" stroke="#bfe3a8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path class="stem" d="M16 26V15"/>
+          <path class="leaf l1" d="M16 17c0-5-3-8-8-8 0 5 3 8 8 8z"/>
+          <path class="leaf l2" d="M16 14c0-4 3-7 8-7 0 4-3 7-8 7z"/>
+        </g>
+      </svg>
+      Semente
+    </div>
+    <div class="top-r">
+      <div class="top-val"><small>Valor final</small><b class="num" id="top-final"></b></div>
+      <button class="acct" id="acct-btn" type="button" aria-haspopup="dialog" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        <span id="acct-lbl">Entrar</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="topo">
+  <div class="intro">
+    <h1>O que você planta hoje vira fruto do tempo.</h1>
+    <p>Ajuste os controles e acompanhe como aportes, prazo e juros compostos mudam o resultado.</p>
+  </div>
+
+  <div class="market" id="market" aria-label="Indicadores de mercado"></div>
+
+  <div class="starters" aria-label="Exemplos prontos">
+    <span>Não sabe por onde começar? Toque num exemplo:</span>
+    <div class="quick">
+      <button type="button" data-sc="cem">Guardar R$ 100 por mês</button>
+      <button type="button" data-sc="reserva">Reserva de emergência em 1 ano</button>
+      <button type="button" data-sc="parado">R$ 10 mil guardados por 5 anos</button>
+      <button type="button" data-sc="longo">Plano de 30 anos</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="results">
+      <section class="hero rv" aria-label="Resultado">
+        <div class="lbl">Você terá</div>
+        <div class="big num" id="t-final"></div>
+        <div class="split" aria-hidden="true"><i class="a" id="bar-inv"></i><i class="b" id="bar-juros"></i></div>
+        <div class="stats">
+          <div><small><i class="dot d-plantou"></i>Você plantou</small><b class="num" id="t-inv"></b></div>
+          <div><small><i class="dot d-juros"></i>Os juros renderam</small><b class="num" id="t-juros"></b></div>
+          <div><small>Em dinheiro de hoje</small><b class="num" id="t-real"></b></div>
+        </div>
+        <div class="net" id="net" hidden>
+          <div><small>Imposto de Renda</small><b class="num" id="t-ir"></b></div>
+          <div><small>Líquido, depois do imposto</small><b class="num" id="t-liq"></b></div>
+        </div>
+      </section>
+
+      <section class="card chart-card rv">
+        <div class="chartwrap">
+          <canvas id="chart" role="img" aria-label="Gráfico da evolução do patrimônio ao longo do prazo"></canvas>
+          <div class="tip" id="tip"></div>
+        </div>
+        <div class="legend">
+          <span><i class="dot d-soil"></i>O que você plantou</span>
+          <span><i class="dot d-leaf"></i>Juros</span>
+          <span><i class="dot d-sun"></i>Poder de compra</span>
+          <span id="lg-late"><i class="dot d-late"></i>Começando mais tarde</span>
+        </div>
+      </section>
+
+      <section class="insights-sec rv">
+        <h2 class="insights-h">O que isso significa</h2>
+        <ul class="insights" id="insights"></ul>
+      </section>
+    </div>
+
+    <section class="card controls rv" aria-label="Controles">
+      <h2>Seu plano</h2>
+      <div class="field">
+        <div class="frow"><label for="n-inicial">Valor inicial</label><span class="inp"><i>R$</i><input class="w-money" id="n-inicial" type="text" inputmode="decimal" autocomplete="off"></span></div>
+        <input type="range" id="inicial" aria-label="Valor inicial, controle deslizante">
+      </div>
+      <div class="field">
+        <div class="frow"><label for="n-mensal">Aporte mensal</label><span class="inp"><i>R$</i><input class="w-money" id="n-mensal" type="text" inputmode="decimal" autocomplete="off"></span></div>
+        <input type="range" id="mensal" aria-label="Aporte mensal, controle deslizante">
+      </div>
+      <div class="field">
+        <div class="frow"><label for="n-taxa">Rendimento</label><span class="inp"><input class="w-pct" id="n-taxa" type="text" inputmode="decimal" autocomplete="off"><i>%</i></span></div>
+        <div class="seg mini" id="modo" role="group" aria-label="Tipo de taxa">
+          <button type="button" data-v="ano">ao ano</button>
+          <button type="button" data-v="mes">ao mês</button>
+          <button type="button" data-v="cdi" disabled title="Buscando o CDI de hoje…">% do CDI</button>
+        </div>
+        <input type="range" id="taxa" aria-label="Rendimento, controle deslizante">
+        <p class="hint" id="h-taxa"></p>
+      </div>
+      <div class="field">
+        <div class="frow"><label for="n-prazo">Prazo</label><span class="inp"><input class="w-pct" id="n-prazo" type="text" inputmode="numeric" autocomplete="off"></span></div>
+        <div class="seg mini" id="unid" role="group" aria-label="Unidade do prazo">
+          <button type="button" data-v="anos">anos</button>
+          <button type="button" data-v="meses">meses</button>
+        </div>
+        <input type="range" id="prazo" aria-label="Prazo, controle deslizante">
+      </div>
+      <label class="check">
+        <input type="checkbox" id="ir">
+        <span>Descontar Imposto de Renda<small>Para renda fixa, como CDB e Tesouro Direto. LCI, LCA e poupança são isentas.</small></span>
+      </label>
+      <hr class="sep">
+      <div class="field">
+        <div class="frow"><label for="n-inflacao">Inflação ao ano</label><span class="inp"><input class="w-pct" id="n-inflacao" type="text" inputmode="decimal" autocomplete="off"><i>%</i></span></div>
+        <input type="range" class="alt" id="inflacao" aria-label="Inflação ao ano, controle deslizante">
+      </div>
+      <div class="field">
+        <label for="espera">E se eu esperar? <output id="o-espera"></output></label>
+        <input type="range" class="warn" id="espera" min="0" max="20" step="1" value="5">
+      </div>
+    </section>
+  </div>
+
+  <section class="card learn rv" id="learn" aria-label="Aprender">
+    <h2>Aprender</h2>
+    <p class="learn-sub">Cinco ideias para entender o seu dinheiro, cada uma em menos de dois minutos. Toque para abrir.</p>
+
+    <details>
+      <summary><i>1</i>Juros compostos: juros sobre juros</summary>
+      <div class="lesson">
+        <p>Nos juros compostos, o rendimento de um período passa a render também no período seguinte. É por isso que o crescimento começa devagar e acelera com o tempo.</p>
+        <p>Um exemplo com R$ 1.000 a 10% ao ano: no primeiro ano você ganha R$ 100 e fica com R$ 1.100. No segundo, os 10% incidem sobre R$ 1.100, e você chega a R$ 1.210, não a R$ 1.200. Em 20 anos, sem colocar mais nada, o valor passa de R$ 6.700. Se os juros não rendessem juros, seriam R$ 3.000.</p>
+        <p class="take">O que mais pesa não é o valor inicial, é o tempo.</p>
+        <button class="btn" type="button" data-sc="compostos">Ver na prática</button>
+      </div>
+    </details>
+
+    <details>
+      <summary><i>2</i>Selic, CDI e inflação</summary>
+      <div class="lesson">
+        <p><b>Selic</b> é a taxa básica de juros do país, definida pelo Banco Central em reuniões a cada 45 dias, mais ou menos. Ela serve de referência para quase todos os juros da economia.</p>
+        <p><b>CDI</b> é a taxa que os bancos cobram entre si em empréstimos de um dia. Ela anda colada na Selic e é a régua da renda fixa: quando um banco oferece "100% do CDI", promete render o mesmo que essa taxa.</p>
+        <p><b>Inflação</b> é o aumento geral dos preços, medido no Brasil pelo IPCA. Se o seu dinheiro rende 10% num ano em que os preços sobem 4%, o ganho de verdade, chamado de ganho real, é de pouco menos de 6%.</p>
+        <p class="take">Render menos que a inflação é perder poder de compra, mesmo com o saldo subindo.</p>
+        <button class="btn" type="button" data-sc="parado">Ver na prática</button>
+      </div>
+    </details>
+
+    <details>
+      <summary><i>3</i>Renda fixa e renda variável</summary>
+      <div class="lesson">
+        <p>Na <b>renda fixa</b>, você empresta dinheiro a um banco ou ao governo, e a regra do rendimento é combinada na hora: uma taxa fixa, um percentual do CDI ou a inflação mais um tanto. São exemplos o Tesouro Direto, o CDB, a LCI, a LCA e a poupança.</p>
+        <p>Na <b>renda variável</b>, você compra um pedaço de algo cujo preço muda todo dia, como ações de empresas e fundos imobiliários. Não há rendimento combinado: pode valorizar bastante e pode cair.</p>
+        <p>Em geral, quanto maior a possibilidade de ganho, maior o risco de perda e mais longo o prazo que faz sentido. Nenhuma das duas é "a melhor"; elas servem a objetivos diferentes.</p>
+        <p class="take">Antes de perguntar quanto rende, pergunte quanto pode cair e por quanto tempo você pode esperar.</p>
+        <a class="btn" href="#stock">Ver cotações da bolsa</a>
+      </div>
+    </details>
+
+    <details>
+      <summary><i>4</i>Reserva de emergência</summary>
+      <div class="lesson">
+        <p>É o dinheiro guardado para imprevistos: perder a renda, um problema de saúde, um conserto urgente. Uma referência comum é juntar de 3 a 6 meses do que você gasta por mês, ou mais se a sua renda for instável.</p>
+        <p>Esse dinheiro precisa de duas qualidades: segurança e poder ser sacado a qualquer momento, o que se chama de liquidez diária. Rendimento alto não é o objetivo aqui.</p>
+        <p>A reserva vem antes de qualquer investimento de risco. Sem ela, um imprevisto obriga a vender investimentos na pior hora ou a recorrer a dívidas caras, como cartão e cheque especial.</p>
+        <p class="take">Primeiro a reserva, depois o resto.</p>
+        <button class="btn" type="button" data-sc="reserva">Ver na prática</button>
+      </div>
+    </details>
+
+    <details>
+      <summary><i>5</i>Como ler a oferta do banco</summary>
+      <div class="lesson">
+        <p><b>"110% do CDI"</b> quer dizer que a aplicação rende o CDI mais 10% dele. <b>"1% ao mês"</b> não é 12% ao ano, e sim 12,68%, porque os juros se acumulam. <b>"IPCA + 6%"</b> rende a inflação do período mais 6% ao ano.</p>
+        <p>Olhe também três coisas além da taxa. O <b>prazo</b>: até quando o dinheiro fica aplicado. A <b>liquidez</b>: se dá para sacar antes e em que condições. E o <b>imposto</b>: na maior parte da renda fixa, o Imposto de Renda fica com 22,5% dos juros em aplicações de até 6 meses e cai aos poucos até 15% depois de 2 anos. LCI, LCA e poupança são isentas.</p>
+        <p>Por isso, para comparar duas ofertas, o que vale é o valor líquido no fim do prazo, não a taxa do anúncio.</p>
+        <p class="take">Compare sempre o líquido com o líquido, no mesmo prazo.</p>
+        <button class="btn" type="button" data-sc="oferta">Ver na prática</button>
+      </div>
+    </details>
+
+    <p class="hint learn-note">Conteúdo educativo. Os exemplos explicam conceitos e não são recomendação de investimento.</p>
+  </section>
+
+  <section class="card stock rv" id="stock" aria-label="Bolsa de valores">
+    <div class="stock-head">
+      <h2>Bolsa de valores</h2>
+      <form class="search" id="s-form">
+        <input id="s-input" type="search" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="40" placeholder="Empresa ou código, ex.: Petrobras" aria-label="Buscar ação pelo nome da empresa ou pelo código" role="combobox" aria-expanded="false" aria-controls="s-sug" aria-autocomplete="list">
+        <button class="btn" type="submit">Buscar</button>
+        <ul class="sug" id="s-sug" role="listbox" aria-label="Ações encontradas" hidden></ul>
+      </form>
+    </div>
+    <div class="quick" id="s-quick" aria-label="Ações populares">
+      <button type="button" data-t="PETR4">PETR4</button>
+      <button type="button" data-t="VALE3">VALE3</button>
+      <button type="button" data-t="ITUB4">ITUB4</button>
+      <button type="button" data-t="MGLU3">MGLU3</button>
+    </div>
+    <div class="s-msg" id="s-msg" role="status"></div>
+    <div id="s-body" hidden>
+      <div class="q-top">
+        <img id="q-logo" alt="" width="44" height="44" loading="lazy">
+        <div class="q-id"><b id="q-sym"></b><span id="q-name"></span></div>
+        <div class="q-price"><div class="big num" id="q-price"></div><span class="pill" id="q-chg"></span></div>
+      </div>
+      <div class="seg" id="s-range" role="group" aria-label="Período do gráfico">
+        <button type="button" data-r="1mo">1M</button>
+        <button type="button" data-r="3mo">3M</button>
+        <button type="button" data-r="6mo">6M</button>
+        <button type="button" data-r="1y">1A</button>
+        <button type="button" data-r="5y">5A</button>
+      </div>
+      <div class="s-chart">
+        <canvas id="s-canvas" role="img" aria-label="Gráfico do preço da ação no período"></canvas>
+        <div class="pulse" id="s-pulse"></div>
+        <div class="tip" id="s-tip"></div>
+      </div>
+      <div class="q-stats">
+        <div><small>No período</small><b id="q-per"></b></div>
+        <div><small>Mínima do período</small><b id="q-min"></b></div>
+        <div><small>Máxima do período</small><b id="q-max"></b></div>
+        <div><small>Faixa de 52 semanas</small><b id="q-52"></b></div>
+      </div>
+      <p class="q-foot" id="q-foot"></p>
+    </div>
+  </section>
+
+  <section class="card news rv" id="news" aria-label="Notícias do mercado">
+    <h2>Notícias do mercado</h2>
+    <!-- Conteúdo padrão: fica na tela se as manchetes automáticas não puderem ser carregadas. -->
+    <ul class="news-list" id="news-list">
+      <li>
+        <a href="https://finsidersbrasil.com.br/tag/investimentos" target="_blank" rel="noopener noreferrer">
+          <small>Finsiders Brasil · sempre atualizado</small>
+          <b>Tudo sobre investimentos</b>
+          <span>As notícias mais recentes sobre investimentos e fintechs.</span>
+        </a>
+      </li>
+    </ul>
+    <p class="news-foot" id="news-foot" hidden>Manchetes da <a href="https://finsidersbrasil.com.br/" target="_blank" rel="noopener noreferrer">Finsiders Brasil</a>. Cada notícia abre no site original.</p>
+  </section>
+
+  <p class="note">Simulação educativa com taxa constante. O Imposto de Renda só é descontado quando a opção está marcada; IOF, come-cotas e taxas não entram na conta. Rendimentos reais variam. As cotações têm atraso e são apenas informativas; nada aqui é recomendação de investimento. <a href="privacidade.html">Política de Privacidade</a></p>
+</main>
+
+<nav class="tabs" id="tabs" aria-label="Seções do aplicativo">
+  <a href="#topo" data-s="topo" class="on">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V11M12 13c0-5-3-8-8-8 0 5 3 8 8 8zM12 10c0-4 3-6 8-6 0 4-3 6-8 6z"/></svg>
+    Simular
+  </a>
+  <a href="#learn" data-s="learn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6c-2-1.5-4.5-2-8-2v14c3.5 0 6 .5 8 2 2-1.5 4.5-2 8-2V4c-3.5 0-6 .5-8 2zM12 6v14"/></svg>
+    Aprender
+  </a>
+  <a href="#stock" data-s="stock">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l5-5 4 3 8-9M15 6h5v5"/></svg>
+    Bolsa
+  </a>
+  <a href="#news" data-s="news">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11v16H7a2 2 0 0 1-2-2zM16 9h3v9a2 2 0 0 1-2 2M8 8h5M8 12h5M8 16h3"/></svg>
+    Notícias
+  </a>
+  <button type="button" id="tab-acct" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    Conta
+  </button>
+</nav>
+
+<script>
+/* Simulador de juros compostos */
+(() => {
+  const $ = id => document.getElementById(id);
+  const brl = v => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+  const dec = (v, d = 2) => v.toLocaleString('pt-BR', { maximumFractionDigits: d });
+  const pct = v => dec(v) + '%';
+  const compact = v => {
+    if (v >= 1e9) return (v / 1e9).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' bi';
+    if (v >= 1e6) return (v / 1e6).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' mi';
+    if (v >= 1e3) return (v / 1e3).toLocaleString('pt-BR', { maximumFractionDigits: 0 }) + ' mil';
+    return String(Math.round(v));
+  };
+  const anosTxt = n => n + (n === 1 ? ' ano' : ' anos');
+  const mesesTxt = n => n + (n === 1 ? ' mês' : ' meses');
+  const prazoTxt = m => { const a = Math.floor(m / 12), r = m % 12; return !a ? mesesTxt(r) : anosTxt(a) + (r ? ' e ' + mesesTxt(r) : ''); };
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const ICONS = {
+    '': '<path d="M12 21V11M12 13c0-5-3-8-8-8 0 5 3 8 8 8zM12 10c0-4 3-6 8-6 0 4-3 6-8 6z"/>',
+    warn: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    real: '<circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.5-1-1.6-1.5-3-1.5-1.7 0-3 .8-3 2s1 1.8 3 2 3 .8 3 2-1.3 2-3 2c-1.4 0-2.5-.5-3-1.5M12 6v2M12 16v2"/>',
+    tax: '<path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"/>'
+  };
+
+  // ---------- Estado e limites ----------
+  // max = limite ao digitar; smin/smax/step = faixa do controle deslizante.
+  const st = { inicial: 5000, mensal: 500, taxa: 10, modo: 'ano', prazo: 30, unid: 'anos', inflacao: 4.5, espera: 5, ir: false };
+  const TAXA = {
+    ano: { max: 100, smin: 0, smax: 20, step: 0.25, def: 10 },
+    mes: { max: 10, smin: 0, smax: 2, step: 0.05, def: 0.8 },
+    cdi: { max: 300, smin: 50, smax: 150, step: 1, def: 100 }
+  };
+  const PRAZO = { anos: { min: 1, max: 60, smin: 1, smax: 50, step: 1, int: true }, meses: { min: 1, max: 720, smin: 1, smax: 120, step: 1, int: true } };
+  const CFG = {
+    inicial: () => ({ max: 1e8, smin: 0, smax: 100000, step: 500 }),
+    mensal: () => ({ max: 1e6, smin: 0, smax: 10000, step: 50 }),
+    taxa: () => TAXA[st.modo],
+    prazo: () => PRAZO[st.unid],
+    inflacao: () => ({ max: 30, smin: 0, smax: 12, step: 0.25 })
+  };
+  let cdi = null; // CDI de hoje, % ao ano (Banco Central)
+
+  // Aceita "1.500,50", "1500,5", "1500.5" e "1.500".
+  function parseNum(txt) {
+    let s = String(txt).replace(/[^\d.,]/g, '');
+    if (!s) return null;
+    if (s.includes(',')) s = s.replace(/\./g, '').replace(',', '.');
+    else if (/^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
+    const v = parseFloat(s);
+    return Number.isFinite(v) ? v : null;
+  }
+
+  // Liga um campo de digitar ao seu controle deslizante. O valor digitado pode passar da faixa do controle.
+  const syncs = {};
+  function bind(key) {
+    const num = $('n-' + key), rng = $(key);
+    const sync = from => {
+      const c = CFG[key]();
+      rng.min = c.smin; rng.max = c.smax; rng.step = c.step;
+      rng.value = clamp(st[key], c.smin, c.smax);
+      rng.style.setProperty('--fill', ((rng.value - c.smin) / (c.smax - c.smin) * 100) + '%');
+      if (from !== 'num') num.value = dec(st[key], c.int ? 0 : key === 'taxa' ? 4 : 2);
+    };
+    rng.addEventListener('input', () => { st[key] = parseFloat(rng.value); sync('rng'); update(); });
+    num.addEventListener('input', () => {
+      const c = CFG[key](), v = parseNum(num.value);
+      if (v === null) return;
+      st[key] = clamp(c.int ? Math.round(v) : v, c.min || 0, c.max);
+      sync('num'); update();
+    });
+    num.addEventListener('blur', () => sync());
+    num.addEventListener('focus', () => num.select());
+    num.addEventListener('keydown', e => { if (e.key === 'Enter') num.blur(); });
+    syncs[key] = sync;
+    sync();
+  }
+  function segment(id, key, onChange) {
+    const box = $(id);
+    const mark = () => box.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === st[key]));
+    box.addEventListener('click', e => {
+      const v = e.target.dataset.v;
+      if (!v || e.target.disabled || v === st[key]) return;
+      onChange(v); st[key] = v; mark(); update();
+    });
+    mark();
+  }
+
+  // ---------- Contas ----------
+  // Converte a taxa escolhida em taxa efetiva ao ano (a) e ao mês (r), em fração.
+  function rates() {
+    let a;
+    if (st.modo === 'mes') a = Math.pow(1 + st.taxa / 100, 12) - 1;
+    else if (st.modo === 'cdi') {
+      // "X% do CDI" incide sobre a taxa diária, em 252 dias úteis por ano.
+      const d = Math.pow(1 + (cdi || 0) / 100, 1 / 252) - 1;
+      a = Math.pow(1 + d * st.taxa / 100, 252) - 1;
+    } else a = st.taxa / 100;
+    return { a, r: Math.pow(1 + a, 1 / 12) - 1 };
+  }
+  // Tabela regressiva do IR da renda fixa, pelo tempo de cada aplicação.
+  const aliquota = meses => { const d = meses * 30; return d <= 180 ? 0.225 : d <= 360 ? 0.2 : d <= 720 ? 0.175 : 0.15; };
+
+  function simulate() {
+    const n = st.unid === 'anos' ? st.prazo * 12 : st.prazo;
+    const { a, r } = rates();
+    const inf = Math.pow(1 + st.inflacao / 100, 1 / 12) - 1;
+    const delay = Math.min(st.espera * 12, n);
+    const bal = [st.inicial], inv = [st.inicial], real = [st.inicial];
+    const late = [delay === 0 ? st.inicial : 0];
+    let b = st.inicial, i = st.inicial, l = late[0], cross = null;
+    // Cada aporte paga imposto conforme o tempo que ficou aplicado.
+    let tax = st.inicial * (Math.pow(1 + r, n) - 1) * aliquota(n);
+    for (let m = 1; m <= n; m++) {
+      const juros = b * r;
+      if (cross === null && st.mensal > 0 && juros >= st.mensal) cross = m;
+      b += juros + st.mensal; i += st.mensal;
+      tax += st.mensal * (Math.pow(1 + r, n - m) - 1) * aliquota(n - m);
+      if (m === delay) l = st.inicial;
+      else if (m > delay) l = l * (1 + r) + st.mensal;
+      bal.push(b); inv.push(i); late.push(l);
+      real.push(b / Math.pow(1 + inf, m));
+    }
+    return { n, a, r, delay, bal, inv, real, late, cross, tax: Math.max(0, tax) };
+  }
+
+  // ---------- Efeitos ----------
+  const canvas = $('chart'), ctx = canvas.getContext('2d'), tip = $('tip');
+  let S = null, hover = null, queued = false;
+  const requestDraw = () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; draw(); }); } };
+
+  // Números que contam: o valor na tela corre até o novo em vez de trocar de uma vez.
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const shown = {}, rafs = {};
+  function countTo(key, to, els) {
+    cancelAnimationFrame(rafs[key]);
+    if (reduceMotion || document.hidden || shown[key] == null) {
+      shown[key] = to; els.forEach(el => el.textContent = brl(to));
+      return;
+    }
+    const from = shown[key], t0 = performance.now();
+    const step = now => {
+      const k = Math.min(1, (now - t0) / 900);
+      shown[key] = from + (to - from) * (1 - Math.pow(1 - k, 3));
+      els.forEach(el => el.textContent = brl(shown[key]));
+      if (k < 1) rafs[key] = requestAnimationFrame(step);
+    };
+    rafs[key] = requestAnimationFrame(step);
+  }
+
+  // Tocar no logo faz o broto crescer de novo.
+  const brand = document.querySelector('.brand');
+  brand.addEventListener('click', () => { brand.classList.add('again'); void brand.offsetWidth; brand.classList.remove('again'); });
+
+  // Revela tudo o que já está acima do limite da tela, então uma seção nunca fica escondida
+  // depois que a pessoa passou por ela, mesmo rolando muito rápido.
+  if (document.documentElement.classList.contains('fx')) {
+    let pend = [...document.querySelectorAll('.rv')];
+    const check = () => {
+      const lim = window.innerHeight * 0.94;
+      pend = pend.filter(el => {
+        if (el.getBoundingClientRect().top >= lim) return true;
+        el.classList.add('in'); return false;
+      });
+      if (!pend.length) { window.removeEventListener('scroll', check); window.removeEventListener('resize', check); }
+    };
+    window.addEventListener('scroll', check, { passive: true });
+    window.addEventListener('resize', check);
+    window.addEventListener('load', check);
+    check();
+  }
+
+  // ---------- Tela ----------
+  function update() {
+    S = simulate();
+    const fin = S.bal[S.n], inv = S.inv[S.n], real = S.real[S.n], late = S.late[S.n], juros = fin - inv;
+
+    $('o-espera').textContent = st.espera === 0 ? 'começar já' : anosTxt(st.espera);
+    const esp = $('espera');
+    esp.style.setProperty('--fill', (st.espera / esp.max * 100) + '%');
+    $('h-taxa').textContent =
+      st.modo === 'mes' ? `Equivale a ${pct(S.a * 100)} ao ano.` :
+      st.modo === 'cdi' ? `CDI hoje: ${pct(cdi)} ao ano. Equivale a ${pct(S.a * 100)} ao ano.` :
+      `Equivale a ${pct(S.r * 100)} ao mês.`;
+
+    // O valor principal dá um leve salto quando muda.
+    if (shown.final != null && Math.round(shown.final) !== Math.round(fin)) {
+      const big = $('t-final');
+      big.classList.remove('bump'); void big.offsetWidth; big.classList.add('bump');
+    }
+    countTo('final', fin, [$('t-final'), $('top-final')]);
+    countTo('inv', inv, [$('t-inv')]);
+    countTo('juros', juros, [$('t-juros')]);
+    countTo('real', real, [$('t-real')]);
+    $('net').hidden = !st.ir;
+    if (st.ir) { countTo('ir', S.tax, [$('t-ir')]); countTo('liq', fin - S.tax, [$('t-liq')]); }
+    const share = fin > 0 ? juros / fin * 100 : 0;
+    $('bar-inv').style.width = (100 - share) + '%';
+    $('bar-juros').style.width = share + '%';
+    $('lg-late').style.display = st.espera > 0 ? '' : 'none';
+
+    const out = [];
+    if (juros > 0) {
+      out.push(['', `<b>${Math.round(share)}%</b> do valor final vem de juros, não do seu bolso. Você plantou ${brl(inv)} e os juros acrescentaram ${brl(juros)} em ${prazoTxt(S.n)}.`]);
+    }
+    if (st.ir && S.tax > 0) {
+      out.push(['tax', `O Imposto de Renda fica com <b>${brl(S.tax)}</b>, o equivalente a ${dec(S.tax / juros * 100, 1)}% dos juros. Líquido, você recebe <b>${brl(fin - S.tax)}</b>.`]);
+    }
+    if (S.cross !== null) {
+      out.push(['', `Depois de <b>${prazoTxt(S.cross)}</b>, os juros de um mês passam a ser maiores que o seu aporte de ${brl(st.mensal)}. Dali em diante o dinheiro trabalha mais que você.`]);
+    } else if (st.mensal > 0 && S.r > 0) {
+      out.push(['', `Neste prazo os juros mensais ainda não superam o aporte de ${brl(st.mensal)}. Aumente o prazo para ver a virada.`]);
+    }
+    if (st.espera > 0 && fin > late) {
+      out.push(['warn', S.delay >= S.n
+        ? `Esperar ${anosTxt(st.espera)} consome o prazo inteiro: você deixaria de acumular <b>${brl(fin - late)}</b>.`
+        : `Esperar ${anosTxt(st.espera)} para começar custa <b>${brl(fin - late)}</b> no final: ${brl(late)} em vez de ${brl(fin)}.`]);
+    }
+    if (st.inflacao > 0) {
+      out.push(['real', `Com inflação de ${pct(st.inflacao)} ao ano, os ${brl(fin)} do futuro compram o que <b>${brl(real)}</b> compram hoje.`]);
+      if (S.a * 100 <= st.inflacao) out.push(['warn', 'O rendimento está igual ou abaixo da inflação: o saldo cresce em reais, mas não ganha poder de compra pelos juros.']);
+    }
+    $('insights').innerHTML = out.map(([c, t]) =>
+      `<li class="${c}"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[c]}</svg></span><div>${t}</div></li>`).join('');
+    requestDraw();
+  }
+
+  function niceMax(v) {
+    if (v <= 0) return 100;
+    const e = Math.pow(10, Math.floor(Math.log10(v)));
+    for (const k of [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]) if (k * e >= v) return k * e;
+    return 10 * e;
+  }
+
+  function draw() {
+    if (!S) return;
+    const W = canvas.clientWidth, H = canvas.clientHeight;
+    if (!W || !H) return;
+    const css = getComputedStyle(document.documentElement);
+    const col = n => css.getPropertyValue(n).trim();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    if (canvas.width !== Math.round(W * dpr) || canvas.height !== Math.round(H * dpr)) {
+      canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+
+    const narrow = W < 420;
+    const pad = { l: narrow ? 46 : 58, r: 8, t: 10, b: 26 };
+    const pw = W - pad.l - pad.r, ph = H - pad.t - pad.b;
+    const max = niceMax(S.bal[S.n]);
+    const stepM = Math.max(1, Math.floor(S.n / 240));
+    const x = m => pad.l + (m / S.n) * pw;
+    const y = v => pad.t + ph - (v / max) * ph;
+    S.geom = { pad, pw };
+
+    ctx.font = (narrow ? 11 : 12) + 'px system-ui, sans-serif';
+    ctx.fillStyle = col('--muted'); ctx.strokeStyle = col('--line'); ctx.lineWidth = 1;
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let i = 0; i <= 4; i++) {
+      const v = max * i / 4, yy = Math.round(y(v)) + 0.5;
+      ctx.beginPath(); ctx.moveTo(pad.l, yy); ctx.lineTo(W - pad.r, yy); ctx.stroke();
+      ctx.fillText(compact(v), pad.l - 8, yy);
+    }
+    // Eixo do tempo: em meses para prazos curtos, em anos para os longos.
+    ctx.textBaseline = 'top';
+    const label = (m, text) => {
+      ctx.textAlign = m === 0 ? 'left' : m === S.n ? 'right' : 'center';
+      ctx.fillText(m === 0 ? 'hoje' : text, x(m), H - pad.b + 8);
+    };
+    if (S.n <= 24) {
+      const step = Math.max(1, Math.ceil(S.n / 4));
+      for (let m = 0; m <= S.n; m += step) label(m, narrow ? m + ' m' : mesesTxt(m));
+    } else {
+      const anos = S.n / 12, step = anos <= 10 ? (narrow && anos > 6 ? 2 : 1) : anos <= 25 ? 5 : 10;
+      for (let a = 0; a * 12 <= S.n; a += step) {
+        // Em tela estreita, pula o rótulo vizinho do último para os dois não se sobreporem.
+        const fim = a * 12 === S.n, colado = !fim && S.n - a * 12 <= step * 12;
+        if (!(narrow && colado)) label(a * 12, anosTxt(a));
+      }
+      if ((S.n / 12) % step !== 0) label(S.n, prazoTxt(S.n));
+    }
+
+    const trace = (arr, from, to) => {
+      const dir = from < to ? stepM : -stepM;
+      for (let m = from; dir > 0 ? m < to : m > to; m += dir) ctx.lineTo(x(m), y(arr[m]));
+      ctx.lineTo(x(to), y(arr[to]));
+    };
+    const area = (top, bottom, color, alpha) => {
+      ctx.beginPath();
+      trace(top, 0, S.n);
+      if (bottom) trace(bottom, S.n, 0); else { ctx.lineTo(x(S.n), y(0)); ctx.lineTo(x(0), y(0)); }
+      ctx.closePath(); ctx.globalAlpha = alpha; ctx.fillStyle = color; ctx.fill(); ctx.globalAlpha = 1;
+    };
+    const line = (arr, color, dash, w) => {
+      ctx.beginPath(); trace(arr, 0, S.n);
+      ctx.setLineDash(dash || []); ctx.lineJoin = 'round'; ctx.strokeStyle = color; ctx.lineWidth = w || 2; ctx.stroke(); ctx.setLineDash([]);
+    };
+    area(S.bal, S.inv, col('--leaf'), 0.45);
+    area(S.inv, null, col('--soil'), 0.6);
+    line(S.bal, col('--leaf'), null, 2.5);
+    line(S.real, col('--sun'), [6, 5]);
+    if (st.espera > 0) line(S.late, col('--late'), [2, 4]);
+
+    if (hover !== null && hover <= S.n) {
+      const xx = Math.round(x(hover)) + 0.5;
+      ctx.strokeStyle = col('--muted'); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(xx, pad.t); ctx.lineTo(xx, pad.t + ph); ctx.stroke();
+      ctx.fillStyle = col('--card'); ctx.strokeStyle = col('--leaf'); ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.arc(x(hover), y(S.bal[hover]), 5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    }
+  }
+
+  function onMove(e) {
+    if (!S || !S.geom) return;
+    const rect = canvas.getBoundingClientRect();
+    const px = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    const g = S.geom;
+    const m = clamp(Math.round((px - g.pad.l) / g.pw * S.n), 0, S.n);
+    if (m === hover) return;
+    hover = m;
+    const row = (c, k, v) => `<div><span><i class="dot d-${c.slice(2)}"></i>${k}</span>${brl(v)}</div>`;
+    tip.innerHTML = `<b>${m === 0 ? 'Hoje' : prazoTxt(m)}</b>` +
+      `<div><span>Saldo</span><strong>${brl(S.bal[m])}</strong></div>` +
+      row('--soil', 'Plantado', S.inv[m]) +
+      row('--leaf', 'Juros', S.bal[m] - S.inv[m]) +
+      row('--sun', 'Em dinheiro de hoje', S.real[m]) +
+      (st.espera > 0 ? row('--late', 'Começando depois', S.late[m]) : '');
+    tip.style.display = 'block';
+    const tw = tip.offsetWidth, xm = g.pad.l + (m / S.n) * g.pw;
+    let left = xm + 14;
+    if (left + tw > rect.width) left = xm - tw - 14;
+    tip.style.left = clamp(left, 0, rect.width - tw) + 'px';
+    requestDraw();
+  }
+  function onLeave() { hover = null; tip.style.display = 'none'; requestDraw(); }
+
+  canvas.addEventListener('mousemove', onMove);
+  canvas.addEventListener('mouseleave', onLeave);
+  canvas.addEventListener('touchstart', onMove, { passive: true });
+  canvas.addEventListener('touchmove', onMove, { passive: true });
+  canvas.addEventListener('touchend', onLeave);
+  canvas.addEventListener('touchcancel', onLeave);
+  window.addEventListener('resize', requestDraw);
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', requestDraw);
+
+  // ---------- Ligações ----------
+  ['inicial', 'mensal', 'taxa', 'prazo', 'inflacao'].forEach(bind);
+  // Trocar o tipo de taxa converte o valor para manter o mesmo rendimento, em vez de zerar a simulação.
+  segment('modo', 'modo', novo => {
+    const { a } = rates();
+    let v;
+    if (novo === 'ano') v = a * 100;
+    else if (novo === 'mes') v = (Math.pow(1 + a, 1 / 12) - 1) * 100;
+    else {
+      const d = Math.pow(1 + cdi / 100, 1 / 252) - 1;
+      v = d > 0 ? (Math.pow(1 + a, 1 / 252) - 1) / d * 100 : TAXA.cdi.def;
+    }
+    st.modo = novo;
+    const casas = novo === 'mes' ? 1e4 : 100; // taxa ao mês precisa de mais casas para não distorcer o resultado
+    st.taxa = clamp(Math.round(v * casas) / casas, 0, TAXA[novo].max);
+    syncs.taxa();
+  });
+  segment('unid', 'unid', nova => {
+    const meses = st.unid === 'anos' ? st.prazo * 12 : st.prazo;
+    st.unid = nova;
+    st.prazo = nova === 'anos' ? clamp(Math.round(meses / 12), 1, PRAZO.anos.max) : clamp(meses, 1, PRAZO.meses.max);
+    syncs.prazo();
+  });
+  $('espera').addEventListener('input', e => { st.espera = parseFloat(e.target.value); update(); });
+  $('ir').addEventListener('change', e => { st.ir = e.target.checked; update(); });
+  update();
+
+  // Porta para a parte de contas salvar e reabrir simulações. Tudo que entra é conferido e limitado.
+  window.Semente = {
+    get: () => ({ ...st }),
+    cdi: () => cdi,
+    set: d => {
+      if (!d || typeof d !== 'object') return;
+      const n = (v, lo, hi, def) => Number.isFinite(+v) ? clamp(+v, lo, hi) : def;
+      st.modo = TAXA[d.modo] && (d.modo !== 'cdi' || cdi) ? d.modo : 'ano';
+      st.unid = PRAZO[d.unid] ? d.unid : 'anos';
+      st.inicial = n(d.inicial, 0, 1e8, 0);
+      st.mensal = n(d.mensal, 0, 1e6, 0);
+      // Se o cenário pedia % do CDI e o CDI não está disponível, usa a taxa padrão ao ano em vez de reaproveitar o número.
+      st.taxa = d.modo === st.modo ? n(d.taxa, 0, TAXA[st.modo].max, TAXA[st.modo].def) : TAXA[st.modo].def;
+      st.prazo = Math.round(n(d.prazo, 1, PRAZO[st.unid].max, 10));
+      st.inflacao = n(d.inflacao, 0, 30, 4.5);
+      st.espera = Math.round(n(d.espera, 0, 20, 0));
+      st.ir = d.ir === true;
+      Object.values(syncs).forEach(f => f());
+      ['modo', 'unid'].forEach(k => document.querySelectorAll(`#${k} button`).forEach(b => b.classList.toggle('on', b.dataset.v === st[k])));
+      $('espera').value = st.espera; $('ir').checked = st.ir;
+      update();
+    }
+  };
+
+  // CDI de hoje, direto do Banco Central (série 4389). Sem ele, a opção "% do CDI" fica desligada.
+  (async () => {
+    const btn = document.querySelector('#modo [data-v="cdi"]');
+    for (const k of [1, 2, 3]) {
+      try {
+        const r = await fetch(`https://api.bcb.gov.br/dados/serie/bcdata.sgs.4389/dados/ultimos/${k}?formato=json`);
+        if (r.status !== 200) continue;
+        const v = parseFloat((await r.json())[0].valor);
+        if (v > 0) { cdi = v; btn.disabled = false; btn.removeAttribute('title'); return; }
+      } catch (e) {}
+    }
+    btn.title = 'Não foi possível obter o CDI de hoje.';
+  })();
+})();
+</script>
+
+<script>
+/* Mercado: indicadores do Banco Central e cotações da bolsa (brapi.dev) */
+(() => {
+  const $ = id => document.getElementById(id);
+  const RANGES = { '1mo': '1d', '3mo': '1d', '6mo': '1d', '1y': '1d', '5y': '1wk' };
+  const num = (v, d = 2) => v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
+  const money = v => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  const signed = v => (v > 0 ? '+' : '') + num(v) + '%';
+  const tone = v => v >= 0 ? 'up' : 'down';
+
+  // ---------- Busca de cotações ----------
+  // Função de servidor do site publicado. Fora do Netlify ela não existe: depois do primeiro 404 a página para de tentar.
+  let apiOff = location.protocol === 'file:';
+  async function api(qs) {
+    if (apiOff) return null;
+    try {
+      const r = await fetch('/api/cotacao?' + qs);
+      if ((r.headers.get('content-type') || '').includes('json')) return { status: r.status, data: await r.json() };
+      if (r.status === 404) apiOff = true;
+    } catch (e) {}
+    return null;
+  }
+
+  // Busca ações pelo nome da empresa ou pelo código.
+  const sugCache = new Map();
+  const plain = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '');
+  async function searchStocks(term) {
+    const key = plain(term).toLowerCase();
+    if (sugCache.has(key)) return sugCache.get(key);
+    const fetchList = async q => {
+      const viaApi = await api('busca=' + encodeURIComponent(q));
+      if (viaApi && viaApi.data && Array.isArray(viaApi.data.stocks)) return viaApi.data.stocks;
+      const r = await fetch(`https://brapi.dev/api/quote/list?search=${encodeURIComponent(q)}&limit=12`);
+      const d = await r.json();
+      return Array.isArray(d.stocks) ? d.stocks : [];
+    };
+    let list = await fetchList(term);
+    if (!list.length && plain(term) !== term) list = await fetchList(plain(term));
+    // Tira o mercado fracionário (códigos terminados em F), que repete as mesmas empresas.
+    list = list.filter(s => s.stock && !/\dF$/.test(s.stock)).slice(0, 6);
+    sugCache.set(key, list);
+    return list;
+  }
+
+  const cache = new Map();
+  async function getQuote(ticker, range, allowDirect = true) {
+    const key = ticker + '|' + range, hit = cache.get(key);
+    if (hit && Date.now() - hit.t < 300000) return hit.d;
+    let data = null, status = 0;
+    const viaApi = await api(`ticker=${encodeURIComponent(ticker)}&range=${range}`);
+    if (viaApi) { data = viaApi.data; status = viaApi.status; }
+    if (!data && allowDirect) {
+      // Sem a função de servidor (página aberta fora do Netlify): só as ações de teste da brapi respondem.
+      try {
+        const r = await fetch(`https://brapi.dev/api/quote/${encodeURIComponent(ticker)}?range=${range}&interval=${RANGES[range]}`);
+        status = r.status; data = await r.json();
+      } catch (e) {}
+    }
+    if (!data) throw { code: 'NETWORK' };
+    const q = data.results && data.results[0];
+    if (data.error || !q || q.regularMarketPrice == null) throw { code: data.code || (status === 404 ? 'NOT_FOUND' : 'ERROR') };
+    const d = {
+      sym: q.symbol, name: q.longName || q.shortName || '', price: q.regularMarketPrice,
+      pct: q.regularMarketChangePercent || 0, time: q.regularMarketTime, logo: q.logourl,
+      lo52: q.fiftyTwoWeekLow, hi52: q.fiftyTwoWeekHigh,
+      hist: (q.historicalDataPrice || []).filter(p => p.close != null).map(p => [p.date * 1000, p.close])
+    };
+    cache.set(key, { t: Date.now(), d });
+    return d;
+  }
+
+  // ---------- Faixa de indicadores ----------
+  // A API do Banco Central às vezes devolve uma resposta vazia (304); nesse caso tenta de novo pedindo um ponto a mais.
+  const bcb = async (serie, n) => {
+    for (const k of [n, n + 1, n + 2]) {
+      try {
+        const r = await fetch(`https://api.bcb.gov.br/dados/serie/bcdata.sgs.${serie}/dados/ultimos/${k}?formato=json`);
+        if (r.status === 200) { const v = await r.json(); if (Array.isArray(v) && v.length) return v.slice(-n); }
+      } catch (e) {}
+    }
+    throw new Error('bcb');
+  };
+  function chip(label, value, pct) {
+    const el = document.createElement('div');
+    el.className = 'chip';
+    el.innerHTML = '<small></small><b></b>';
+    el.children[0].textContent = label;
+    el.children[1].textContent = value;
+    if (pct != null) {
+      const em = document.createElement('em');
+      em.className = tone(pct); em.textContent = signed(pct);
+      el.appendChild(em);
+    }
+    return el;
+  }
+  // Dólar comercial quase em tempo real (AwesomeAPI); se falhar, usa a taxa oficial do dia (PTAX, Banco Central).
+  async function dolar() {
+    try {
+      const r = await fetch('https://economia.awesomeapi.com.br/json/last/USD-BRL');
+      const q = (await r.json()).USDBRL, v = parseFloat(q.bid);
+      if (r.ok && v > 0) return { v, pct: parseFloat(q.pctChange) };
+    } catch (e) {}
+    const p = (await bcb(1, 2)).map(x => parseFloat(x.valor));
+    return { v: p[p.length - 1], pct: p.length > 1 ? (p[p.length - 1] / p[0] - 1) * 100 : null };
+  }
+  function refreshMarket() {
+    return Promise.allSettled([getQuote('^BVSP', '1mo', false), dolar(), bcb(432, 1), bcb(13522, 1)]).then(([ibov, usd, selic, ipca]) => {
+      const chips = [];
+      if (ibov.status === 'fulfilled') chips.push(chip('Ibovespa', num(ibov.value.price, 0) + ' pts', ibov.value.pct));
+      if (usd.status === 'fulfilled') chips.push(chip('Dólar', 'R$ ' + num(usd.value.v), Number.isFinite(usd.value.pct) ? usd.value.pct : null));
+      if (selic.status === 'fulfilled') chips.push(chip('Selic', num(parseFloat(selic.value[0].valor)) + '% a.a.'));
+      if (ipca.status === 'fulfilled') chips.push(chip('Inflação em 12 meses', num(parseFloat(ipca.value[0].valor)) + '%'));
+      // Se tudo falhar numa atualização, mantém os valores que já estavam na tela.
+      if (chips.length) $('market').replaceChildren(...chips);
+    });
+  }
+  refreshMarket();
+
+  // ---------- Ação selecionada ----------
+  const cv = $('s-canvas'), c = cv.getContext('2d'), tip = $('s-tip'), msg = $('s-msg');
+  const cur = { ticker: 'PETR4', range: '3mo', d: null };
+  const pulse = $('s-pulse');
+  let reqId = 0, prog = 1, hov = null, G = null, queued = false, shownQuote = null;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ERR = {
+    MISSING_TOKEN: 'Por enquanto, a Semente mostra cotações de PETR4, VALE3, ITUB4 e MGLU3. As demais ações chegam em breve.',
+    NETWORK: 'Sem conexão com o serviço de cotações. Tente de novo em instantes.',
+    ERROR: 'Não foi possível buscar essa cotação agora. Tente de novo em instantes.'
+  };
+  ERR.INVALID_TOKEN = ERR.MISSING_TOKEN;
+
+  function marks() {
+    document.querySelectorAll('#s-quick button').forEach(b => b.classList.toggle('on', b.dataset.t === cur.ticker));
+    document.querySelectorAll('#s-range button').forEach(b => b.classList.toggle('on', b.dataset.r === cur.range));
+  }
+
+  // silent = atualização automática: não mostra "Buscando", não anima e não troca a tela por erro.
+  async function load(ticker, range, silent = false) {
+    const id = ++reqId;
+    if (!silent) { msg.className = 's-msg'; msg.textContent = 'Buscando ' + ticker + '…'; }
+    try {
+      const d = await getQuote(ticker, range);
+      if (id !== reqId) return;
+      cur.ticker = ticker; cur.range = range; cur.d = d;
+      if (!silent) msg.textContent = '';
+      render(!silent);
+    } catch (e) {
+      if (id !== reqId || silent) return;
+      msg.className = 's-msg err';
+      msg.textContent = ERR[e.code] || `Não encontrei a ação “${ticker}”. Confira o código, por exemplo PETR4 ou VALE3.`;
+    }
+  }
+
+  function render(animate = true) {
+    const d = cur.d;
+    $('s-body').hidden = false;
+    const logo = $('q-logo');
+    logo.style.visibility = d.logo ? 'visible' : 'hidden';
+    logo.onerror = () => { logo.style.visibility = 'hidden'; };
+    if (d.logo) logo.src = d.logo;
+    $('q-sym').textContent = d.sym;
+    $('q-name').textContent = d.name;
+    const priceEl = $('q-price');
+    // Na atualização automática, o preço pisca em verde ou vermelho se mudou.
+    if (!animate && shownQuote && shownQuote.sym === d.sym && shownQuote.price !== d.price) {
+      priceEl.style.setProperty('--fc', `var(${d.price > shownQuote.price ? '--leaf' : '--late'})`);
+      priceEl.classList.remove('flash'); void priceEl.offsetWidth; priceEl.classList.add('flash');
+    }
+    shownQuote = { sym: d.sym, price: d.price };
+    priceEl.textContent = money(d.price);
+    const chg = $('q-chg');
+    chg.className = 'pill ' + tone(d.pct); chg.textContent = signed(d.pct) + ' hoje';
+    const closes = d.hist.map(p => p[1]);
+    if (closes.length > 1) {
+      const per = (closes[closes.length - 1] / closes[0] - 1) * 100;
+      $('q-per').className = tone(per); $('q-per').textContent = signed(per);
+      $('q-min').textContent = money(Math.min(...closes));
+      $('q-max').textContent = money(Math.max(...closes));
+    } else {
+      $('q-per').className = ''; $('q-per').textContent = $('q-min').textContent = $('q-max').textContent = '–';
+    }
+    $('q-52').textContent = d.lo52 != null && d.hi52 != null ? num(d.lo52) + ' – ' + num(d.hi52) : '–';
+    const when = d.time ? new Date(d.time).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
+    $('q-foot').textContent = (when ? 'Última cotação: ' + when + '. ' : '') + 'Dados com atraso, fornecidos por brapi.dev.';
+    marks();
+    if (!animate) { prog = 1; if (hov !== null && hov >= d.hist.length) onLeave(); else draw(); return; }
+    hov = null; tip.style.display = 'none';
+    if (reduce) { prog = 1; draw(); return; }
+    const t0 = performance.now(), my = reqId;
+    const step = now => {
+      if (my !== reqId) return;
+      const k = Math.min(1, (now - t0) / 1300);
+      prog = 1 - Math.pow(1 - k, 3);
+      draw();
+      if (k < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  const rgba = (hex, a) => {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`;
+  };
+
+  function draw() {
+    const d = cur.d;
+    if (!d || d.hist.length < 2) return;
+    const W = cv.clientWidth, H = cv.clientHeight;
+    if (!W || !H) return;
+    const css = getComputedStyle(document.documentElement);
+    const col = n => css.getPropertyValue(n).trim();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+    c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    c.clearRect(0, 0, W, H);
+
+    const h = d.hist, n = h.length, first = h[0][1], last = h[n - 1][1];
+    const color = col(last >= first ? '--leaf' : '--late'), muted = col('--muted'), line = col('--line');
+    let lo = Infinity, hi = -Infinity, iLo = 0, iHi = 0;
+    h.forEach((p, i) => { if (p[1] < lo) { lo = p[1]; iLo = i; } if (p[1] > hi) { hi = p[1]; iHi = i; } });
+    const span = (hi - lo) || hi * 0.02 || 1, yMin = lo - span * 0.12, yMax = hi + span * 0.12;
+    const pad = { l: 6, r: 50, t: 20, b: 24 };
+    const pw = W - pad.l - pad.r, ph = H - pad.t - pad.b;
+    const x = i => pad.l + (i / (n - 1)) * pw;
+    const y = v => pad.t + ph - ((v - yMin) / (yMax - yMin)) * ph;
+    G = { pad, pw, n };
+
+    // Grade e escala à direita
+    c.font = '11px system-ui, sans-serif'; c.textBaseline = 'middle'; c.textAlign = 'left';
+    c.lineWidth = 1;
+    for (let i = 0; i <= 3; i++) {
+      const v = yMin + (yMax - yMin) * i / 3, yy = Math.round(y(v)) + 0.5;
+      c.strokeStyle = line; c.beginPath(); c.moveTo(pad.l, yy); c.lineTo(pad.l + pw, yy); c.stroke();
+      c.fillStyle = muted; c.fillText(num(v), pad.l + pw + 8, yy);
+    }
+    // Linha de referência: preço no início do período
+    c.setLineDash([3, 4]); c.strokeStyle = muted; c.globalAlpha = 0.6;
+    c.beginPath(); c.moveTo(pad.l, Math.round(y(first)) + 0.5); c.lineTo(pad.l + pw, Math.round(y(first)) + 0.5); c.stroke();
+    c.setLineDash([]); c.globalAlpha = 1;
+
+    // Datas
+    c.textBaseline = 'top'; c.fillStyle = muted;
+    const long = cur.range === '1y' || cur.range === '5y';
+    const fmt = t => new Date(t).toLocaleDateString('pt-BR', long ? { month: 'short', year: '2-digit' } : { day: '2-digit', month: 'short' }).replace('. de ', '/').replace('.', '');
+    [0, Math.round((n - 1) / 3), Math.round((n - 1) * 2 / 3), n - 1].forEach((i, k) => {
+      c.textAlign = k === 0 ? 'left' : k === 3 ? 'right' : 'center';
+      c.fillText(fmt(h[i][0]), x(i), H - pad.b + 8);
+    });
+
+    // Área e linha, reveladas da esquerda para a direita
+    c.save();
+    c.beginPath(); c.rect(0, 0, pad.l + pw * prog + 1, H); c.clip();
+    const path = () => { c.beginPath(); h.forEach((p, i) => i ? c.lineTo(x(i), y(p[1])) : c.moveTo(x(i), y(p[1]))); };
+    path(); c.lineTo(x(n - 1), pad.t + ph); c.lineTo(x(0), pad.t + ph); c.closePath();
+    const g = c.createLinearGradient(0, pad.t, 0, pad.t + ph);
+    g.addColorStop(0, rgba(color, 0.38)); g.addColorStop(0.7, rgba(color, 0.08)); g.addColorStop(1, rgba(color, 0));
+    c.fillStyle = g; c.fill();
+    path(); c.lineJoin = 'round'; c.lineCap = 'round'; c.lineWidth = 2.5; c.strokeStyle = color;
+    c.shadowColor = rgba(color, 0.55); c.shadowBlur = 10; c.shadowOffsetY = 3;
+    c.stroke();
+    c.restore();
+
+    if (prog >= 1) {
+      // Máxima e mínima do período
+      c.font = '600 11px system-ui, sans-serif'; c.fillStyle = muted;
+      [[iHi, hi, -1], [iLo, lo, 1]].forEach(([i, v, dir]) => {
+        if (hi === lo) return;
+        c.beginPath(); c.arc(x(i), y(v), 3, 0, Math.PI * 2); c.fillStyle = color; c.fill();
+        const t = num(v), tw = c.measureText(t).width;
+        c.fillStyle = muted; c.textAlign = 'left'; c.textBaseline = dir < 0 ? 'bottom' : 'top';
+        c.fillText(t, Math.max(pad.l, Math.min(pad.l + pw - tw, x(i) - tw / 2)), y(v) + dir * 7);
+      });
+      // Último preço: ponto fixo no gráfico e um pulso por cima (elemento à parte, animado só com CSS)
+      c.fillStyle = color; c.beginPath(); c.arc(x(n - 1), y(last), 4, 0, Math.PI * 2); c.fill();
+      pulse.style.left = x(n - 1) + 'px'; pulse.style.top = y(last) + 'px';
+      pulse.style.color = color; pulse.style.display = 'block';
+    } else {
+      pulse.style.display = 'none';
+    }
+
+    if (hov !== null) {
+      const xx = Math.round(x(hov)) + 0.5;
+      c.strokeStyle = muted; c.lineWidth = 1;
+      c.beginPath(); c.moveTo(xx, pad.t); c.lineTo(xx, pad.t + ph); c.stroke();
+      c.fillStyle = col('--card'); c.strokeStyle = color; c.lineWidth = 2.5;
+      c.beginPath(); c.arc(x(hov), y(h[hov][1]), 5, 0, Math.PI * 2); c.fill(); c.stroke();
+    }
+  }
+  const requestDraw = () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; draw(); }); } };
+
+  function onMove(e) {
+    const d = cur.d;
+    if (!d || !G || prog < 1) return;
+    const rect = cv.getBoundingClientRect();
+    const px = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    const i = Math.max(0, Math.min(G.n - 1, Math.round((px - G.pad.l) / G.pw * (G.n - 1))));
+    if (i === hov) return;
+    hov = i;
+    const p = d.hist[i], per = (p[1] / d.hist[0][1] - 1) * 100;
+    tip.innerHTML = '<b></b><div><span>Fechamento</span><strong></strong></div><div><span>Desde o início</span><strong></strong></div>';
+    tip.querySelector('b').textContent = new Date(p[0]).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+    const s = tip.querySelectorAll('strong');
+    s[0].textContent = money(p[1]);
+    s[1].textContent = signed(per); s[1].className = tone(per);
+    tip.style.display = 'block';
+    const tw = tip.offsetWidth, xm = G.pad.l + (i / (G.n - 1)) * G.pw;
+    let left = xm + 14;
+    if (left + tw > rect.width) left = xm - tw - 14;
+    tip.style.left = Math.max(0, Math.min(rect.width - tw, left)) + 'px';
+    requestDraw();
+  }
+  function onLeave() { hov = null; tip.style.display = 'none'; requestDraw(); }
+
+  cv.addEventListener('mousemove', onMove);
+  cv.addEventListener('mouseleave', onLeave);
+  cv.addEventListener('touchstart', onMove, { passive: true });
+  cv.addEventListener('touchmove', onMove, { passive: true });
+  cv.addEventListener('touchend', onLeave);
+  cv.addEventListener('touchcancel', onLeave);
+  window.addEventListener('resize', requestDraw);
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', requestDraw);
+
+  // ---------- Campo de busca com sugestões ----------
+  const input = $('s-input'), sug = $('s-sug');
+  const KIND = { 3: 'ON', 4: 'PN', 5: 'PNA', 6: 'PNB', 11: 'Unit ou fundo' };
+  const nice = s => (s || '').toLowerCase().replace(/(^|[\s\-.(])([a-zà-ú])/g, (m, a, b) => a + b.toUpperCase()).replace(/\bS\.a\.?/g, 'S.A.');
+  let items = [], act = -1, searchId = 0, timer = 0;
+
+  function closeSug() { sug.hidden = true; act = -1; input.setAttribute('aria-expanded', 'false'); }
+  function setAct(i) {
+    act = i;
+    [...sug.children].forEach((li, k) => { li.classList.toggle('act', k === i); if (k === i) li.scrollIntoView({ block: 'nearest' }); });
+  }
+  function showSug(list, term) {
+    items = list; act = -1;
+    sug.replaceChildren();
+    if (!list.length) {
+      const li = document.createElement('li');
+      li.className = 'empty'; li.textContent = `Nenhuma ação encontrada para “${term}”.`;
+      sug.appendChild(li);
+    }
+    list.forEach((s, i) => {
+      const li = document.createElement('li');
+      li.setAttribute('role', 'option'); li.dataset.i = i;
+      li.innerHTML = '<img alt="" width="30" height="30" loading="lazy"><div class="n"><b></b><span></span></div><div class="p"></div>';
+      const img = li.querySelector('img');
+      img.onerror = () => { img.style.visibility = 'hidden'; };
+      if (s.logo) img.src = s.logo; else img.style.visibility = 'hidden';
+      const b = li.querySelector('b');
+      b.textContent = s.stock;
+      const kind = KIND[(s.stock.match(/\d+$/) || [])[0]];
+      if (kind) { const t = document.createElement('span'); t.className = 'tag'; t.textContent = kind; b.appendChild(t); }
+      // Alguns papéis estrangeiros vêm sem nome (o nome repete o código): mostra o tipo no lugar.
+      const semNome = !s.name || s.name.toUpperCase() === s.stock;
+      li.querySelector('.n > span').textContent = semNome ? (/3[2-5]$/.test(s.stock) ? 'BDR (empresa estrangeira)' : '') : nice(s.name);
+      const p = li.querySelector('.p');
+      if (typeof s.close === 'number') {
+        p.textContent = money(s.close);
+        if (typeof s.change === 'number') { const em = document.createElement('em'); em.className = tone(s.change); em.textContent = signed(s.change); p.appendChild(em); }
+      }
+      sug.appendChild(li);
+    });
+    sug.hidden = false; input.setAttribute('aria-expanded', 'true');
+  }
+  function pick(s) {
+    input.value = s.stock; closeSug(); input.blur();
+    load(s.stock, cur.range);
+  }
+  async function runSearch(term) {
+    const id = ++searchId;
+    try {
+      const list = await searchStocks(term);
+      if (id === searchId && document.activeElement === input) showSug(list, term);
+      return list;
+    } catch (e) { if (id === searchId) closeSug(); return null; }
+  }
+
+  input.addEventListener('input', () => {
+    clearTimeout(timer);
+    const term = input.value.trim();
+    if (term.length < 2) { searchId++; closeSug(); return; }
+    timer = setTimeout(() => runSearch(term), 250);
+  });
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeSug(); return; }
+    if (sug.hidden || !items.length) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); setAct((act + 1) % items.length); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setAct((act - 1 + items.length) % items.length); }
+  });
+  input.addEventListener('focus', () => { if (items.length && input.value.trim().length >= 2) { sug.hidden = false; input.setAttribute('aria-expanded', 'true'); } });
+  input.addEventListener('blur', () => setTimeout(closeSug, 150));
+  sug.addEventListener('pointerdown', e => e.preventDefault()); // mantém o foco no campo ao tocar na lista
+  sug.addEventListener('click', e => { const li = e.target.closest('li[data-i]'); if (li) pick(items[+li.dataset.i]); });
+
+  $('s-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    clearTimeout(timer);
+    const term = input.value.trim();
+    if (!sug.hidden && act >= 0 && items[act]) { pick(items[act]); return; }
+    // Código completo digitado (ex.: PETR4, BOVA11): vai direto.
+    if (/^[A-Za-z]{4}\d{1,2}$/.test(term)) { closeSug(); input.blur(); load(term.toUpperCase(), cur.range); return; }
+    if (term.length < 2) {
+      msg.className = 's-msg err'; msg.textContent = 'Digite o nome da empresa ou o código da ação, por exemplo Petrobras ou PETR4.';
+      return;
+    }
+    // Nome digitado: usa o primeiro resultado da busca.
+    msg.className = 's-msg'; msg.textContent = 'Procurando “' + term + '”…';
+    const list = await runSearch(term);
+    if (list && list.length) { msg.textContent = ''; pick(list[0]); }
+    else { msg.className = 's-msg err'; msg.textContent = list ? `Não encontrei nenhuma ação para “${term}”.` : 'Sem conexão com o serviço de cotações. Tente de novo em instantes.'; }
+  });
+  $('s-quick').addEventListener('click', e => { const t = e.target.dataset.t; if (t) load(t, cur.range); });
+  $('s-range').addEventListener('click', e => { const r = e.target.dataset.r; if (r && r !== cur.range) load(cur.ticker, r); });
+
+  // ---------- Notícias ----------
+  // Manchetes vindas da função de servidor. Sem ela (ou se falhar), o cartão padrão do HTML continua na tela.
+  const ago = iso => {
+    const d = new Date(iso), min = Math.round((Date.now() - d) / 60000);
+    if (!iso || Number.isNaN(min)) return '';
+    if (min < 1) return 'agora';
+    if (min < 60) return `há ${min} min`;
+    if (min < 24 * 60) return `há ${Math.round(min / 60)} h`;
+    if (min < 48 * 60) return 'ontem';
+    return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }).replace('.', '');
+  };
+  async function refreshNews() {
+    if (location.protocol === 'file:') return;
+    try {
+      const r = await fetch('/api/noticias');
+      if (!r.ok || !(r.headers.get('content-type') || '').includes('json')) return;
+      const d = await r.json();
+      const items = (d.items || []).filter(it => it.title && /^https:\/\//.test(it.link));
+      if (!items.length) return;
+      $('news-list').replaceChildren(...items.map(it => {
+        const li = document.createElement('li');
+        li.innerHTML = '<a target="_blank" rel="noopener noreferrer"><small></small><b></b></a>';
+        const a = li.firstChild;
+        a.href = it.link;
+        a.children[0].textContent = [d.source, ago(it.date)].filter(Boolean).join(' · ');
+        a.children[1].textContent = it.title;
+        return li;
+      }));
+      $('news-foot').hidden = false;
+    } catch (e) {}
+  }
+  refreshNews();
+
+  // Atualização automática: a cada 5 minutos com a página visível, e ao voltar para a aba depois desse tempo.
+  // Com a aba em segundo plano nada é buscado, para não gastar bateria nem o limite da chave.
+  const EVERY = 5 * 60 * 1000;
+  let started = false, lastRefresh = Date.now();
+  function refreshAll() {
+    if (document.hidden) return;
+    lastRefresh = Date.now();
+    cache.clear();
+    refreshMarket();
+    refreshNews();
+    if (started && cur.d) load(cur.ticker, cur.range, true);
+  }
+  setInterval(refreshAll, EVERY);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - lastRefresh >= EVERY) refreshAll(); });
+
+  // Só busca a primeira cotação quando a seção se aproxima da tela: nada pesa no carregamento.
+  const start = () => { started = true; load(cur.ticker, cur.range); };
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => { if (es.some(en => en.isIntersecting)) { io.disconnect(); start(); } }, { rootMargin: '300px' });
+    io.observe($('stock'));
+  } else start();
+})();
+</script>
+
+<dialog class="dlg" id="acct-dlg" aria-labelledby="dlg-t">
+  <form method="dialog" class="dlg-x"><button aria-label="Fechar">×</button></form>
+  <h2 id="dlg-t">Sua conta</h2>
+
+  <div id="v-setup" hidden>
+    <p><b>Em breve:</b> acesso por e-mail, sem senha, para salvar as suas simulações e abri-las em qualquer aparelho.</p>
+    <p class="hint">Enquanto isso, o simulador, as cotações e as notícias funcionam normalmente, sem cadastro.</p>
+    <p class="hint" id="setup-dev" hidden>Para ativar: preencha o arquivo <code>config.js</code> com a URL e a chave pública do projeto no Supabase e rode o <code>supabase/schema.sql</code>. Este parágrafo só aparece no computador de quem desenvolve.</p>
+  </div>
+
+  <form id="v-login" hidden>
+    <p>Digite seu e-mail e enviaremos um link de acesso. Não existe senha para criar nem para lembrar.</p>
+    <div class="search">
+      <input id="acct-email" type="email" autocomplete="email" inputmode="email" required maxlength="120" placeholder="voce@exemplo.com" aria-label="Seu e-mail">
+      <button class="btn" type="submit" id="login-btn">Enviar link</button>
+    </div>
+    <p class="dlg-msg" id="login-msg" role="status"></p>
+    <p class="hint">Seu e-mail é usado só para o acesso e para guardar as suas simulações. Ninguém mais consegue vê-las.</p>
+  </form>
+
+  <div id="v-user" hidden>
+    <p>Conectado como <b id="acct-who"></b></p>
+    <form class="search" id="save-form">
+      <input id="save-name" type="text" required maxlength="60" autocomplete="off" placeholder="Nome para a simulação atual" aria-label="Nome para a simulação atual">
+      <button class="btn" type="submit">Salvar</button>
+    </form>
+    <p class="dlg-msg" id="save-msg" role="status"></p>
+    <ul class="saved" id="saved" aria-label="Simulações salvas"></ul>
+    <button class="link" type="button" id="acct-out">Sair da conta</button>
+  </div>
+</dialog>
+
+<script>
+/* Aplicativo: barra de navegação e funcionamento offline */
+(() => {
+  // Destaca na barra a seção que está na tela.
+  const tabs = [...document.querySelectorAll('#tabs a')];
+  const secs = tabs.map(a => document.getElementById(a.dataset.s));
+  let queued = false;
+  const mark = () => {
+    queued = false;
+    const lim = window.innerHeight * 0.45;
+    let cur = 0;
+    secs.forEach((s, i) => { if (i && s.getBoundingClientRect().top < lim) cur = i; });
+    tabs.forEach((a, i) => a.classList.toggle('on', i === cur));
+  };
+  const schedule = () => { if (!queued) { queued = true; requestAnimationFrame(mark); } };
+  window.addEventListener('scroll', schedule, { passive: true });
+  // As seções mudam de altura quando cotações e notícias chegam; refaz a marcação nesses momentos.
+  if ('ResizeObserver' in window) new ResizeObserver(schedule).observe(document.body);
+  // "Simular" volta ao topo de verdade, sem deixar #topo no endereço.
+  tabs[0].addEventListener('click', e => { e.preventDefault(); window.scrollTo({ top: 0 }); });
+  mark();
+
+  // Exemplos prontos: preenchem o simulador e levam a pessoa até o resultado.
+  // "cdi: true" usa 100% (ou o percentual indicado) do CDI de hoje; sem o CDI, cai na taxa padrão ao ano.
+  const SCENARIOS = {
+    cem:       { inicial: 0,     mensal: 100, prazo: 10, unid: 'anos',  cdi: 100, ir: true },
+    reserva:   { inicial: 0,     mensal: 500, prazo: 12, unid: 'meses', cdi: 100, ir: true },
+    parado:    { inicial: 10000, mensal: 0,   prazo: 5,  unid: 'anos',  cdi: 100, ir: true },
+    longo:     { inicial: 0,     mensal: 500, prazo: 30, unid: 'anos',  ano: 8,   ir: false },
+    compostos: { inicial: 1000,  mensal: 0,   prazo: 20, unid: 'anos',  ano: 10,  ir: false },
+    oferta:    { inicial: 10000, mensal: 0,   prazo: 24, unid: 'meses', cdi: 110, ir: true }
+  };
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-sc]'), sc = b && SCENARIOS[b.dataset.sc];
+    if (!sc || !window.Semente) return;
+    const usaCdi = sc.cdi != null && window.Semente.cdi();
+    window.Semente.set({
+      inicial: sc.inicial, mensal: sc.mensal, prazo: sc.prazo, unid: sc.unid, ir: sc.ir,
+      modo: usaCdi ? 'cdi' : 'ano', taxa: usaCdi ? sc.cdi : (sc.ano != null ? sc.ano : 10),
+      inflacao: window.Semente.get().inflacao, espera: 0
+    });
+    document.querySelectorAll('.starters [data-sc]').forEach(x => x.classList.toggle('on', x === b));
+    window.scrollTo({ top: 0 });
+  });
+
+  // Service worker: guarda uma cópia do app para abrir sem internet. Exige https (ou localhost).
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
+  }
+})();
+</script>
+
+<script src="config.js"></script>
+<script>
+/* Conta: acesso por link no e-mail (Supabase) e simulações salvas */
+(() => {
+  const $ = id => document.getElementById(id);
+  const cfg = window.SEMENTE_CONFIG || {};
+  const ready = /^https:\/\/[^\s/]+$/.test(cfg.supabaseUrl || '') && String(cfg.supabaseAnonKey || '').length > 20;
+  const dev = ['localhost', '127.0.0.1'].includes(location.hostname);
+  // Sem configuração, o botão de conta aparece com um aviso de "em breve".
+  $('setup-dev').hidden = !dev;
+
+  const LIB = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js';
+  // Hash oficial publicado pelo jsDelivr para este arquivo (confere com o arquivo servido).
+  // Trocar a versão da biblioteca exige trocar este hash, senão o login não carrega.
+  const LIB_HASH = 'sha256-hZaWX+kY5lZgChtWjToWj1wNPSKmAIhrtvRKZVXbAec=';
+  const MAX = 20;
+  const btn = $('acct-btn'), dlg = $('acct-dlg');
+  let sb = null, user = null;
+
+  const show = id => ['v-setup', 'v-login', 'v-user'].forEach(v => { $(v).hidden = v !== id; });
+  const say = (id, text, err) => { const el = $(id); el.textContent = text; el.classList.toggle('err', !!err); };
+
+  function paint() {
+    btn.classList.toggle('on', !!user);
+    $('acct-lbl').textContent = user ? 'Minha conta' : 'Entrar';
+    if (!ready) { show('v-setup'); return; }
+    if (!user) { show('v-login'); return; }
+    show('v-user');
+    $('acct-who').textContent = user.email || '';
+    if (dlg.open) list();
+  }
+
+  const resumo = d => {
+    const taxa = (+d.taxa || 0).toLocaleString('pt-BR', { maximumFractionDigits: 2 }) + (d.modo === 'cdi' ? '% do CDI' : d.modo === 'mes' ? '% ao mês' : '% ao ano');
+    const brl = v => (+v || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+    return `${brl(d.inicial)} + ${brl(d.mensal)}/mês · ${taxa} · ${+d.prazo || 0} ${d.unid === 'meses' ? 'meses' : 'anos'}`;
+  };
+
+  async function list() {
+    const ul = $('saved');
+    const { data, error } = await sb.from('simulacoes').select('id,nome,dados,criado_em').order('criado_em', { ascending: false }).limit(MAX);
+    if (error) { say('save-msg', 'Não foi possível carregar suas simulações agora.', true); return; }
+    ul.replaceChildren();
+    if (!data.length) {
+      const li = document.createElement('li');
+      li.className = 'empty'; li.textContent = 'Você ainda não salvou nenhuma simulação.';
+      ul.appendChild(li); return;
+    }
+    data.forEach(row => {
+      const li = document.createElement('li');
+      li.innerHTML = '<div><b></b><small></small></div><div class="acts"><button type="button">Abrir</button><button type="button" class="del">Apagar</button></div>';
+      li.querySelector('b').textContent = row.nome;
+      li.querySelector('small').textContent = resumo(row.dados || {}) + ' · ' + new Date(row.criado_em).toLocaleDateString('pt-BR');
+      const [abrir, apagar] = li.querySelectorAll('button');
+      abrir.addEventListener('click', () => { window.Semente.set(row.dados); dlg.close(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      apagar.addEventListener('click', async () => {
+        if (!confirm(`Apagar a simulação “${row.nome}”? Isso não pode ser desfeito.`)) return;
+        const { error: e } = await sb.from('simulacoes').delete().eq('id', row.id);
+        if (e) say('save-msg', 'Não foi possível apagar agora.', true); else { say('save-msg', 'Simulação apagada.'); list(); }
+      });
+      ul.appendChild(li);
+    });
+  }
+
+  $('v-login').addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = $('acct-email').value.trim(), b = $('login-btn');
+    b.disabled = true; say('login-msg', 'Enviando…');
+    const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: location.origin + location.pathname } });
+    if (error) {
+      // O banco recusa contas novas quando o limite da fase inicial é atingido (supabase/limite-de-contas.sql).
+      const cheio = /database error|LIMITE_DE_CONTAS/i.test(error.message || '');
+      say('login-msg',
+        cheio ? 'As vagas desta fase inicial estão preenchidas. Você pode continuar usando o simulador sem conta; em breve abriremos mais vagas.' :
+        error.status === 429 ? 'Muitos pedidos seguidos. Aguarde um minuto e tente de novo.' :
+        'Não foi possível enviar o link agora. Confira o e-mail e tente de novo.', true);
+      b.disabled = false; return;
+    }
+    say('login-msg', `Link enviado para ${email}. Abra o e-mail neste aparelho e toque no link para entrar.`);
+    setTimeout(() => { b.disabled = false; }, 60000); // evita pedidos repetidos em sequência
+  });
+
+  $('save-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const nome = $('save-name').value.trim();
+    if (!nome) return;
+    if ($('saved').querySelectorAll('li:not(.empty)').length >= MAX) { say('save-msg', `O limite é de ${MAX} simulações. Apague alguma para salvar outra.`, true); return; }
+    const { error } = await sb.from('simulacoes').insert({ nome, dados: window.Semente.get() });
+    if (error) { say('save-msg', 'Não foi possível salvar agora.', true); return; }
+    $('save-name').value = ''; say('save-msg', 'Simulação salva.'); list();
+  });
+
+  $('acct-out').addEventListener('click', async () => { await sb.auth.signOut(); dlg.close(); });
+  btn.addEventListener('click', () => { say('login-msg', ''); say('save-msg', ''); dlg.showModal(); paint(); });
+  dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); }); // toque fora fecha
+
+  btn.hidden = false;
+  $('tab-acct').hidden = false;
+  $('tab-acct').addEventListener('click', () => btn.click());
+  paint();
+  if (!ready) return;
+
+  // A biblioteca só é baixada quando o acesso por e-mail está configurado.
+  const s = document.createElement('script');
+  s.src = LIB; s.async = true; s.integrity = LIB_HASH; s.crossOrigin = 'anonymous';
+  s.onload = async () => {
+    sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+    sb.auth.onAuthStateChange((_evt, session) => { user = session ? session.user : null; paint(); });
+    const { data } = await sb.auth.getSession();
+    user = data.session ? data.session.user : null;
+    paint();
+  };
+  s.onerror = () => { btn.hidden = true; };
+  document.head.appendChild(s);
+})();
+</script>
+</body>
+</html>

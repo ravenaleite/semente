@@ -1,0 +1,26 @@
+Plantei uma ideia e ela brotou. 🌱
+
+Muita gente trava em educação financeira não por falta de interesse, mas porque o assunto chega em forma de sigla e tabela. Selic, CDI, "110% do CDI", "1% ao mês"... dá vontade de fechar a aba.
+
+Por isso criei a Semente: um aplicativo gratuito para aprender finanças vendo, e não decorando.
+
+O que dá para fazer nela:
+
+• Aprender em 5 lições curtas: juros compostos, Selic e CDI, renda fixa e variável, reserva de emergência e como ler a oferta do banco
+• Tocar em "Ver na prática" e ver cada conceito virar um gráfico com números de verdade
+• Simular o seu próprio plano, com a taxa do jeito que o banco anuncia (ao ano, ao mês ou em % do CDI)
+• Ver quanto o Imposto de Renda leva e quanto o dinheiro vale depois da inflação
+• Acompanhar dólar, Selic, inflação, cotações e notícias do mercado
+• Instalar no celular como aplicativo e entrar só com o e-mail, sem senha
+
+Um exemplo que costuma surpreender: guardando um valor fixo por mês durante 30 anos, mais de 80% do resultado final pode vir dos juros, e não do bolso de quem guardou. Ler isso é uma coisa. Ver a curva subindo é outra.
+
+A Semente é uma ferramenta educativa. Ela explica e simula; não recomenda investimentos.
+
+Nesta primeira fase abri 100 vagas para quem quiser criar conta e guardar as simulações. O simulador e as lições são livres para todos:
+
+https://semente-simulador.netlify.app
+
+Se testar, me conta o que achou e o que faltou. É assim que ela cresce.
+
+#EducaçãoFinanceira #FinançasPessoais #JurosCompostos #DesenvolvimentoWeb #PWA

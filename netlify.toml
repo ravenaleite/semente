@@ -1,0 +1,23 @@
+[build]
+  publish = "public"
+
+[functions]
+  directory = "netlify/functions"
+
+# A página principal é o semente.html
+[[redirects]]
+  from = "/"
+  to = "/semente.html"
+  status = 200
+
+# O service worker precisa ser sempre conferido na rede, senão o app fica preso numa versão antiga.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+# Tipo correto do manifesto do app (o Netlify não reconhece a extensão sozinho).
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json; charset=utf-8"

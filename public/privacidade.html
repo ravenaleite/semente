@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f5f0e6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171512" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="description" content="Como a Semente trata os seus dados: o que é guardado, para quê, com quem é compartilhado e como pedir a exclusão.">
+<link rel="canonical" href="https://semente-simulador.netlify.app/privacidade.html">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Semente">
+<meta property="og:title" content="Política de Privacidade · Semente">
+<meta property="og:description" content="Como a Semente trata os seus dados: o que é guardado, para quê, com quem é compartilhado e como pedir a exclusão.">
+<meta property="og:url" content="https://semente-simulador.netlify.app/privacidade.html">
+<meta property="og:image" content="https://semente-simulador.netlify.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Semente: educação financeira na prática, com o simulador aberto no celular">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Política de Privacidade · Semente">
+<meta name="twitter:description" content="Como a Semente trata os seus dados: o que é guardado, para quê, com quem é compartilhado e como pedir a exclusão.">
+<meta name="twitter:image" content="https://semente-simulador.netlify.app/og-image.png">
+<title>Política de Privacidade · Semente</title>
+<style>
+  :root { --bg: #f5f0e6; --card: #fffdf8; --text: #2a2520; --muted: #6d6359; --line: #e6dfd0; --leaf: #2f7a3e; --late: #a8432f; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #171512; --card: #211e1a; --text: #f1ebe0; --muted: #a39a8c; --line: #332e27; --leaf: #6cc07a; --late: #e37a62; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; -webkit-tap-highlight-color: transparent; background: var(--bg); color: var(--text); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: calc(24px + env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) calc(48px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+  a { color: var(--leaf); }
+  h1 { font: 600 clamp(1.6rem, 5vw, 2.1rem)/1.2 "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; margin: 16px 0 4px; }
+  h2 { font: 600 1.15rem/1.3 "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; margin: 28px 0 6px; }
+  p, li { margin: 0 0 10px; }
+  ul { padding-left: 20px; margin: 0 0 10px; }
+  .muted { color: var(--muted); font-size: 0.9rem; }
+  .todo { background: var(--card); border: 1px solid var(--late); border-left-width: 4px; border-radius: 12px; padding: 12px 14px; margin: 16px 0; font-size: 0.92rem; }
+  mark { background: none; color: var(--late); font-weight: 650; }
+</style>
+</head>
+<body>
+<main>
+  <a href="semente.html">← Voltar para a Semente</a>
+  <h1>Política de Privacidade</h1>
+  <p class="muted">Última atualização: 12 de novembro de 2026</p>
+
+
+  <h2>Quem é responsável</h2>
+  <p>A Semente é oferecida pela desenvolvedora Ravena Leite, responsável pelo tratamento dos dados descritos aqui. Contato para assuntos de privacidade: <a href="mailto:desenvolvedoraravena@proton.me">desenvolvedoraravena@proton.me</a>.</p>
+
+  <h2>O que a Semente faz</h2>
+  <p>A Semente é uma ferramenta educativa: simula juros compostos e mostra cotações, indicadores e manchetes do mercado. Ela não recebe dinheiro, não executa investimentos e não faz recomendação de investimento.</p>
+
+  <h2>Quais dados são tratados</h2>
+  <ul>
+    <li><b>Sem conta:</b> nenhum dado pessoal é coletado. As simulações são calculadas no seu aparelho e não são enviadas a nós.</li>
+    <li><b>Com conta:</b> guardamos o seu e-mail, usado para enviar o link de acesso, e as simulações que você escolher salvar (valores, taxa, prazo e o nome que você deu).</li>
+    <li><b>Dados técnicos:</b> como em qualquer site, o provedor de hospedagem registra informações de acesso, como endereço IP e data, por segurança.</li>
+  </ul>
+  <p>Não usamos cookies de publicidade nem ferramentas de rastreamento.</p>
+
+  <h2>Para que usamos</h2>
+  <ul>
+    <li>Permitir que você entre na sua conta sem senha, por um link enviado ao seu e-mail.</li>
+    <li>Guardar e mostrar a você as suas próprias simulações.</li>
+    <li>Manter o serviço seguro e funcionando.</li>
+  </ul>
+  <p>As bases legais são a execução do serviço que você solicitou e o legítimo interesse em manter a segurança (Lei 13.709/2018, a LGPD). Não vendemos nem alugamos seus dados.</p>
+
+  <h2>Com quem os dados são compartilhados</h2>
+  <ul>
+    <li><b>Supabase:</b> guarda as contas e as simulações salvas e envia o e-mail de acesso.</li>
+    <li><b>Netlify:</b> hospeda o site.</li>
+    <li><b>Fontes de dados de mercado</b> (brapi.dev, Banco Central do Brasil, AwesomeAPI, Finsiders Brasil) e a rede de distribuição jsDelivr: o seu navegador consulta esses serviços para carregar cotações, indicadores, manchetes e componentes. Eles recebem dados técnicos da conexão, como o endereço IP, mas não o seu e-mail nem as suas simulações.</li>
+  </ul>
+  <p>Alguns desses serviços ficam fora do Brasil, o que significa transferência internacional de dados nos termos da LGPD.</p>
+
+  <h2>Por quanto tempo guardamos</h2>
+  <p>O e-mail e as simulações ficam guardados enquanto a conta existir. Ao excluir a conta, as simulações são apagadas junto.</p>
+
+  <h2>Seus direitos</h2>
+  <p>Você pode pedir a confirmação e o acesso aos seus dados, a correção, a exclusão da conta e das simulações e informações sobre o compartilhamento. As simulações você mesmo apaga, a qualquer momento, na janela "Minha conta". Para excluir a conta ou exercer os demais direitos, escreva para <a href="mailto:desenvolvedoraravena@proton.me">desenvolvedoraravena@proton.me</a>. Você também pode reclamar à Autoridade Nacional de Proteção de Dados (ANPD).</p>
+
+  <h2>Segurança</h2>
+  <p>O acesso é feito por link de uso único enviado ao seu e-mail, sem senha. As simulações são protegidas por regras no banco de dados que só permitem que cada pessoa veja e apague as suas. Nenhum sistema é totalmente imune a falhas; se houver um incidente relevante, avisaremos os afetados.</p>
+
+  <h2>Crianças e adolescentes</h2>
+  <p>A Semente não é direcionada a menores de 18 anos.</p>
+
+  <h2>Mudanças nesta política</h2>
+  <p>Se esta política mudar de forma relevante, a nova versão será publicada nesta página com a data atualizada.</p>
+</main>
+</body>
+</html>
