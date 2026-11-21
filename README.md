@@ -4,7 +4,7 @@ Educação financeira na prática: um aplicativo web gratuito para aprender fina
 
 **No ar:** https://semente-simulador.netlify.app
 
-Pode ser instalado no celular como aplicativo (PWA) e abre mesmo sem internet. É uma ferramenta educativa: explica e simula, não recomenda investimentos.
+Pode ser instalado no celular como aplicativo (PWA), sempre com o visual escuro, e abre mesmo sem internet. É uma ferramenta educativa: explica e simula, não recomenda investimentos.
 
 ## O que o app faz
 
@@ -63,6 +63,7 @@ netlify deploy --prod --dir public --functions netlify/functions
 |---|---|---|
 | Netlify | Hospedagem e funções | Variável de ambiente `BRAPI_TOKEN` |
 | Supabase | Contas e simulações salvas | `public/config.js` (só a chave pública); rodar os dois arquivos de `supabase/` no SQL Editor |
+| Gmail (`acesso.semente@gmail.com`) | Envio dos e-mails de acesso (SMTP no Supabase, com senha de app; limite de 30 envios/hora) | Supabase > Authentication > Emails > SMTP Settings; modelos em português em `supabase/emails/` |
 | brapi.dev | Cotações da bolsa (plano gratuito: 15 mil chamadas/mês, 3 meses de histórico, ~30 min de atraso) | Variável secreta `BRAPI_TOKEN` no Netlify; as respostas ficam 5 min no CDN e são compartilhadas entre visitantes |
 | Banco Central | Selic, CDI, inflação, dólar oficial | Sem chave |
 | AwesomeAPI | Dólar comercial | Sem chave |
@@ -70,16 +71,17 @@ netlify deploy --prod --dir public --functions netlify/functions
 
 ## Identidade visual
 
-Paleta "terra e broto", com tema claro e escuro automáticos:
+Paleta "terra e broto", sempre no tema escuro (em qualquer aparelho, mesmo no modo claro):
 
-| Uso | Claro | Escuro |
-|---|---|---|
-| Verde principal | `#2f5d3a` | `#24452c` |
-| Juros (folha) | `#2f7a3e` | `#6cc07a` |
-| O que você plantou (terra) | `#a9825a` | `#c49a6c` |
-| Poder de compra (sol) | `#a87208` | `#eab54a` |
-| Alerta | `#a8432f` | `#e37a62` |
-| Fundo | `#f5f0e6` | `#171512` |
+| Uso | Cor |
+|---|---|
+| Verde principal (cartão de resultado, botões) | `#24452c` |
+| Juros (folha) | `#6cc07a` |
+| O que você plantou (terra) | `#c49a6c` |
+| Poder de compra (sol) | `#eab54a` |
+| Alerta | `#e37a62` |
+| Fundo | `#171512` |
+| Cartões | `#211e1a` |
 
 Títulos em serifada do sistema (Iowan Old Style, Palatino, Georgia); textos na fonte do sistema. Nenhuma fonte é baixada, para o app ficar leve.
 
@@ -93,8 +95,7 @@ Relata, sem editar nada, problemas de contraste (WCAG AA, temas claro e escuro),
 
 ## Pendências
 
-- Ligar um serviço de e-mail próprio (SMTP) no Supabase: o envio embutido aceita poucos e-mails por hora.
-- Colar o e-mail em português (`supabase/emails/link-de-acesso.html`) no Supabase.
+- Registrar um domínio próprio (ex.: `sementeapp.com.br`) e trocar o envio de e-mails do Gmail para um serviço transacional com esse domínio.
 - Revisão jurídica da política de privacidade.
 - Teste em aparelhos reais (Android e iPhone) e empacotamento para as lojas.
 

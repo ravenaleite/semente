@@ -19,8 +19,8 @@
 <meta name="twitter:title" content="Semente: educação financeira na prática">
 <meta name="twitter:description" content="Educação financeira na prática: aprenda vendo o seu dinheiro crescer, com simulador de juros compostos, lições curtas, bolsa e notícias. Gratuito.">
 <meta name="twitter:image" content="https://semente-simulador.netlify.app/og-image.png">
-<meta name="theme-color" content="#f5f0e6" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#171512" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#171512">
+<meta name="color-scheme" content="dark">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232f5d3a'/%3E%3Cpath d='M16 26V15M16 17c0-5-3-8-8-8 0 5 3 8 8 8zM16 14c0-4 3-7 8-7 0 4-3 7-8 7z' fill='%23bfe3a8' stroke='%23bfe3a8' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -30,22 +30,16 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Semente</title>
 <style>
+  /* A Semente usa sempre o tema escuro, em qualquer aparelho (escolha de identidade visual). */
   :root {
-    --bg: #f5f0e6; --card: #fffdf8; --text: #2a2520; --muted: #6d6359; --line: #e6dfd0;
-    --leaf: #2f7a3e; --soil: #a9825a; --sun: #a87208; --late: #a8432f; /* tons do tema claro escurecidos para passar em 4,5:1 */
-    --hero: #2f5d3a; --hero-text: #f7f3e8; --hero-muted: #c5d8c0; --hero-line: rgba(255,255,255,.16);
-    --track: #e3dbc9;
-    --split-plantou: #d9b88f; --split-juros: #a5dc98; /* barra e bolinhas do cartão verde, iguais nos dois temas */
+    color-scheme: dark;
+    --bg: #171512; --card: #211e1a; --text: #f1ebe0; --muted: #a39a8c; --line: #332e27;
+    --leaf: #6cc07a; --soil: #c49a6c; --sun: #eab54a; --late: #e37a62;
+    --hero: #24452c; --hero-text: #f4f0e4; --hero-muted: #b3c9ae; --hero-line: rgba(255,255,255,.12);
+    --track: #3a342c;
+    --split-plantou: #d9b88f; --split-juros: #a5dc98; /* barra e bolinhas do cartão verde */
     --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
     --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #171512; --card: #211e1a; --text: #f1ebe0; --muted: #a39a8c; --line: #332e27;
-      --leaf: #6cc07a; --soil: #c49a6c; --sun: #eab54a; --late: #e37a62;
-      --hero: #24452c; --hero-text: #f4f0e4; --hero-muted: #b3c9ae; --hero-line: rgba(255,255,255,.12);
-      --track: #3a342c;
-    }
   }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
