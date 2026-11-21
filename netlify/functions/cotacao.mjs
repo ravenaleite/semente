@@ -14,20 +14,34 @@ const json = (status, body, extra = {}) =>
     headers: { 'content-type': 'application/json; charset=utf-8', ...extra },
   });
 
-const brapi = async (url, maxAge) => {
+// Chamada à brapi. Devolve a resposta original (status e corpo) ou null se a rede falhar.
+const chamar = async (url) => {
   const token = process.env.BRAPI_TOKEN;
   try {
     const res = await fetch(url, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
-    return new Response(await res.text(), {
-      status: res.status,
-      headers: {
-        'content-type': 'application/json; charset=utf-8',
-        'cache-control': res.ok ? `public, max-age=${maxAge}` : 'no-store',
-      },
-    });
+    return { ok: res.ok, status: res.status, body: await res.text() };
   } catch {
-    return json(502, { error: true, code: 'UPSTREAM', message: 'Não foi possível consultar as cotações agora.' });
+    return null;
   }
+};
+
+// Respostas de sucesso ficam guardadas no CDN do Netlify e são compartilhadas por todos os
+// visitantes: assim cada cotação custa uma chamada a cada 5 minutos, não uma por pessoa.
+// O plano gratuito da brapi tem 15 mil chamadas por mês.
+const responder = (r, maxAge, extra = {}) => {
+  if (!r) return json(502, { error: true, code: 'UPSTREAM', message: 'Não foi possível consultar as cotações agora.' });
+  return new Response(r.body, {
+    status: r.status,
+    headers: {
+      'content-type': 'application/json; charset=utf-8',
+      'cache-control': r.ok ? `public, max-age=${maxAge}` : 'no-store',
+      ...(r.ok ? {
+        'netlify-cdn-cache-control': `public, s-maxage=${maxAge}, stale-while-revalidate=60, durable`,
+        'netlify-vary': 'query',
+      } : {}),
+      ...extra,
+    },
+  });
 };
 
 export default async (req) => {
@@ -39,7 +53,7 @@ export default async (req) => {
     if (busca.length < 2 || busca.length > 40) {
       return json(400, { error: true, code: 'INVALID_SEARCH', message: 'Busca inválida.' });
     }
-    return brapi(`https://brapi.dev/api/quote/list?search=${encodeURIComponent(busca)}&limit=12`, 3600);
+    return responder(await chamar(`https://brapi.dev/api/quote/list?search=${encodeURIComponent(busca)}&limit=12`), 3600);
   }
 
   const ticker = (params.get('ticker') || '').trim().toUpperCase();
@@ -52,8 +66,15 @@ export default async (req) => {
     return json(400, { error: true, code: 'INVALID_RANGE', message: 'Período inválido.' });
   }
 
-  // Cotações mudam devagar para este uso: 5 minutos de cache poupam o limite da chave.
-  return brapi(`https://brapi.dev/api/quote/${encodeURIComponent(ticker)}?range=${range}&interval=${RANGES[range]}`, 300);
+  const url = (r) => `https://brapi.dev/api/quote/${encodeURIComponent(ticker)}?range=${r}&interval=${RANGES[r]}`;
+  const r = await chamar(url(range));
+  // O plano gratuito da brapi só entrega 3 meses de histórico. Se um período maior for recusado,
+  // devolve 3 meses e avisa a página pelo cabeçalho, em vez de mostrar erro.
+  if (r && !r.ok && ['6mo', '1y', '5y'].includes(range)) {
+    const curto = await chamar(url('3mo'));
+    if (curto && curto.ok) return responder(curto, 300, { 'x-semente-range': '3mo' });
+  }
+  return responder(r, 300, { 'x-semente-range': range });
 };
 
 export const config = { path: '/api/cotacao' };

@@ -10,7 +10,12 @@ const ORIGIN = 'https://finsidersbrasil.com.br/';
 const json = (status, body, cache = 'no-store') =>
   new Response(JSON.stringify(body), {
     status,
-    headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': cache },
+    headers: {
+      'content-type': 'application/json; charset=utf-8',
+      'cache-control': cache,
+      // Guardado no CDN do Netlify e compartilhado entre visitantes, para poupar o site de origem.
+      ...(status === 200 ? { 'netlify-cdn-cache-control': 'public, s-maxage=900, stale-while-revalidate=300, durable' } : {}),
+    },
   });
 
 const decode = (s) =>

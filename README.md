@@ -13,7 +13,7 @@ Pode ser instalado no celular como aplicativo (PWA) e abre mesmo sem internet. �
 - **Inflação e custo de esperar:** quanto o resultado vale em dinheiro de hoje e quanto se perde adiando o início.
 - **Exemplos prontos** para quem não sabe por onde começar.
 - **Aprender:** cinco lições curtas (juros compostos; Selic, CDI e inflação; renda fixa e variável; reserva de emergência; como ler a oferta do banco), cada uma com um botão "Ver na prática".
-- **Mercado:** dólar, Selic e inflação; cotações da bolsa com busca pelo nome da empresa e gráfico; manchetes da Finsiders Brasil. Tudo se atualiza sozinho a cada 5 minutos com a página aberta.
+- **Mercado:** Ibovespa, dólar, Selic e inflação; cotações da bolsa com busca pelo nome da empresa e gráfico; manchetes da Finsiders Brasil. Tudo se atualiza sozinho a cada 5 minutos com a página aberta.
 - **Conta sem senha:** entrada por link enviado ao e-mail, para salvar e reabrir simulações. Nesta fase, limitada a 100 contas.
 
 ## Estrutura
@@ -63,7 +63,7 @@ netlify deploy --prod --dir public --functions netlify/functions
 |---|---|---|
 | Netlify | Hospedagem e funções | Variável de ambiente `BRAPI_TOKEN` |
 | Supabase | Contas e simulações salvas | `public/config.js` (só a chave pública); rodar os dois arquivos de `supabase/` no SQL Editor |
-| brapi.dev | Cotações da bolsa | Token cadastrado no Netlify |
+| brapi.dev | Cotações da bolsa (plano gratuito: 15 mil chamadas/mês, 3 meses de histórico, ~30 min de atraso) | Variável secreta `BRAPI_TOKEN` no Netlify; as respostas ficam 5 min no CDN e são compartilhadas entre visitantes |
 | Banco Central | Selic, CDI, inflação, dólar oficial | Sem chave |
 | AwesomeAPI | Dólar comercial | Sem chave |
 | Finsiders Brasil | Manchetes | Sem chave |
@@ -93,7 +93,6 @@ Relata, sem editar nada, problemas de contraste (WCAG AA, temas claro e escuro),
 
 ## Pendências
 
-- Cadastrar a chave da brapi no Netlify: hoje só PETR4, VALE3, ITUB4 e MGLU3 mostram cotação, e o Ibovespa não aparece.
 - Ligar um serviço de e-mail próprio (SMTP) no Supabase: o envio embutido aceita poucos e-mails por hora.
 - Colar o e-mail em português (`supabase/emails/link-de-acesso.html`) no Supabase.
 - Revisão jurídica da política de privacidade.
