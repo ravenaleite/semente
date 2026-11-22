@@ -4,7 +4,7 @@ Educação financeira na prática: um aplicativo web gratuito para aprender fina
 
 **No ar:** https://semente-simulador.netlify.app
 
-Pode ser instalado no celular como aplicativo (PWA), sempre com o visual escuro, e abre mesmo sem internet. É uma ferramenta educativa: explica e simula, não recomenda investimentos.
+Pode ser instalado no celular como aplicativo (PWA), sempre com o visual escuro, e abre mesmo sem internet. Testado em aparelhos reais, incluindo iPhone. É uma ferramenta educativa: explica e simula, não recomenda investimentos.
 
 ![Semente no celular: simulador, gráfico, lições e bolsa](divulgacao/post-linkedin.png)
 
@@ -104,11 +104,11 @@ python auditar.py .
 
 Relata, sem editar nada, problemas de contraste (WCAG AA), meta tags, compatibilidade com iPhone, segredos, Git e acessibilidade.
 
-## Pendências
+## Próximos passos
 
 - Registrar um domínio próprio (ex.: `sementeapp.com.br`) e trocar o envio de e-mails do Gmail para um serviço transacional com esse domínio.
 - Revisão jurídica da política de privacidade.
-- Teste em aparelhos reais (Android e iPhone) e empacotamento para as lojas.
+- Empacotamento para a Play Store e a App Store.
 
 ## Responsável
 
