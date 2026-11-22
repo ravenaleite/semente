@@ -1,0 +1,19 @@
+Estou construindo um aplicativo de educação financeira, e quero dividir o caminho. 🌱
+
+Ele se chama Semente. A ideia é simples: muita gente desiste de entender finanças porque o assunto chega cheio de siglas. Então, em vez de explicar com tabela, a Semente mostra o dinheiro crescendo num gráfico.
+
+O que já está funcionando:
+
+• Um simulador de juros compostos que aceita a taxa do jeito que o banco anuncia
+• Cinco lições curtas, cada uma com um exemplo "na prática"
+• Cotações da bolsa e notícias do mercado
+• Versão para instalar no celular
+
+Nos últimos dias aprendi muito além do código: contraste de cores para quem lê no sol, limites de serviços gratuitos, envio de e-mail, privacidade de dados. Cada detalhe que parece pequeno muda a experiência de quem usa.
+
+Ainda tem estrada pela frente, mas já dá para ver de perto:
+https://semente-simulador.netlify.app
+
+Se você testar, me conta o que achou. Toda sugestão ajuda a semente a crescer.
+
+#EducaçãoFinanceira #DesenvolvimentoWeb #BuildInPublic

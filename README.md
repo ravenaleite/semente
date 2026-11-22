@@ -102,3 +102,7 @@ Relata, sem editar nada, problemas de contraste (WCAG AA, temas claro e escuro),
 ## Responsável
 
 Desenvolvido por Ravena Leite. Contato: desenvolvedoraravena@proton.me
+
+## Licença
+
+Copyright © 2026 Ravena Leite. Todos os direitos reservados. O código está público apenas para consulta e estudo; veja [LICENSE](LICENSE).
