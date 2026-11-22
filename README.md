@@ -6,6 +6,16 @@ Educação financeira na prática: um aplicativo web gratuito para aprender fina
 
 Pode ser instalado no celular como aplicativo (PWA), sempre com o visual escuro, e abre mesmo sem internet. É uma ferramenta educativa: explica e simula, não recomenda investimentos.
 
+![Semente no celular: simulador, gráfico, lições e bolsa](divulgacao/post-linkedin.png)
+
+## Tecnologias
+
+- **Front-end:** HTML, CSS e JavaScript puros, sem framework, num único arquivo; gráficos desenhados em `<canvas>`.
+- **PWA:** manifesto e service worker para instalar no celular e abrir sem internet.
+- **Back-end:** Netlify Functions (Node.js) para cotações e notícias, com cache compartilhado no CDN.
+- **Contas e dados:** Supabase (login por link no e-mail, PostgreSQL com Row Level Security e limite de contas por gatilho).
+- **Qualidade:** contraste WCAG AA, `prefers-reduced-motion`, verificação de integridade (SRI) na biblioteca externa e auditoria automatizada (`auditar.py`).
+
 ## O que o app faz
 
 - **Simulador de juros compostos:** valor inicial, aporte mensal, prazo em anos ou meses e taxa ao ano, ao mês ou em % do CDI (o CDI do dia vem do Banco Central).
@@ -39,6 +49,7 @@ dev-server.mjs             servidor local com as funções (fora do ar)
 simulador-de-celulares.html  vê o app em 6 tamanhos de Android e iPhone (fora do ar)
 auditar.py                 auditoria de contraste, meta tags, segurança e acessibilidade (fora do ar)
 netlify.toml               configuração de publicação
+LICENSE                    todos os direitos reservados
 ```
 
 ## Rodar no computador
@@ -63,7 +74,7 @@ netlify deploy --prod --dir public --functions netlify/functions
 |---|---|---|
 | Netlify | Hospedagem e funções | Variável de ambiente `BRAPI_TOKEN` |
 | Supabase | Contas e simulações salvas | `public/config.js` (só a chave pública); rodar os dois arquivos de `supabase/` no SQL Editor |
-| Gmail (`acesso.semente@gmail.com`) | Envio dos e-mails de acesso (SMTP no Supabase, com senha de app; limite de 30 envios/hora) | Supabase > Authentication > Emails > SMTP Settings; modelos em português em `supabase/emails/` |
+| Gmail (conta dedicada ao app) | Envio dos e-mails de acesso (SMTP no Supabase, com senha de app; limite de 30 envios/hora) | Supabase > Authentication > Emails > SMTP Settings; modelos em português em `supabase/emails/` |
 | brapi.dev | Cotações da bolsa (plano gratuito: 15 mil chamadas/mês, 3 meses de histórico, ~30 min de atraso) | Variável secreta `BRAPI_TOKEN` no Netlify; as respostas ficam 5 min no CDN e são compartilhadas entre visitantes |
 | Banco Central | Selic, CDI, inflação, dólar oficial | Sem chave |
 | AwesomeAPI | Dólar comercial | Sem chave |
@@ -91,7 +102,7 @@ Títulos em serifada do sistema (Iowan Old Style, Palatino, Georgia); textos na 
 python auditar.py .
 ```
 
-Relata, sem editar nada, problemas de contraste (WCAG AA, temas claro e escuro), meta tags, compatibilidade com iPhone, segredos, Git e acessibilidade.
+Relata, sem editar nada, problemas de contraste (WCAG AA), meta tags, compatibilidade com iPhone, segredos, Git e acessibilidade.
 
 ## Pendências
 
