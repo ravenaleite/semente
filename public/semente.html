@@ -1104,7 +1104,9 @@
   async function api(qs) {
     if (apiOff) return null;
     try {
-      const r = await fetch('/api/cotacao?' + qs);
+      // 'no-cache': o navegador sempre confere com o servidor. Quem segura a cotação por até 5 minutos é só
+      // o CDN do Netlify (compartilhado entre visitantes), então nenhum valor na tela passa disso.
+      const r = await fetch('/api/cotacao?' + qs, { cache: 'no-cache' });
       if ((r.headers.get('content-type') || '').includes('json')) return { status: r.status, data: await r.json(), range: r.headers.get('x-semente-range') };
       if (r.status === 404) apiOff = true;
     } catch (e) {}
@@ -1143,7 +1145,7 @@
     if (!data && allowDirect) {
       // Sem a função de servidor (página aberta fora do Netlify): só as ações de teste da brapi respondem.
       try {
-        const r = await fetch(`https://brapi.dev/api/quote/${encodeURIComponent(ticker)}?range=${range}&interval=${RANGES[range]}`);
+        const r = await fetch(`https://brapi.dev/api/quote/${encodeURIComponent(ticker)}?range=${range}&interval=${RANGES[range]}`, { cache: 'no-cache' });
         status = r.status; data = await r.json();
       } catch (e) {}
     }
@@ -1165,7 +1167,7 @@
   const bcb = async (serie, n) => {
     for (const k of [n, n + 1, n + 2]) {
       try {
-        const r = await fetch(`https://api.bcb.gov.br/dados/serie/bcdata.sgs.${serie}/dados/ultimos/${k}?formato=json`);
+        const r = await fetch(`https://api.bcb.gov.br/dados/serie/bcdata.sgs.${serie}/dados/ultimos/${k}?formato=json`, { cache: 'no-cache' });
         if (r.status === 200) { const v = await r.json(); if (Array.isArray(v) && v.length) return v.slice(-n); }
       } catch (e) {}
     }
@@ -1185,9 +1187,11 @@
     return el;
   }
   // Dólar comercial quase em tempo real (AwesomeAPI); se falhar, usa a taxa oficial do dia (PTAX, Banco Central).
+  // 'no-store': a AwesomeAPI permite ao navegador reaproveitar respostas por até 3 dias (stale-while-revalidate),
+  // o que fazia o app mostrar cotações velhas.
   async function dolar() {
     try {
-      const r = await fetch('https://economia.awesomeapi.com.br/json/last/USD-BRL');
+      const r = await fetch('https://economia.awesomeapi.com.br/json/last/USD-BRL', { cache: 'no-store' });
       const q = (await r.json()).USDBRL, v = parseFloat(q.bid);
       if (r.ok && v > 0) return { v, pct: parseFloat(q.pctChange) };
     } catch (e) {}
